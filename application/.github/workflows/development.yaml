@@ -5,8 +5,12 @@ on:
     branches:
     - main
     paths:
-    - .github/workflows/development.yaml
-    - application/**/*
+      - "**/*.js"
+      - "package.json"
+      - "package-lock.json"
+      - "Dockerfile"
+      - ".github/workflows/development.yml"
+      - ".github/workflows/clean.yml"
     types: [opened, synchronize, reopened, labeled]
 
 permissions:
