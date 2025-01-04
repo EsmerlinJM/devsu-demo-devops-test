@@ -4,6 +4,7 @@ on:
     branches:
     - main
     paths:
+      - application/**/*
       - "**/*.js"
       - "package.json"
       - "package-lock.json"
