@@ -44,11 +44,8 @@ jobs:
   build-and-push:
     name: Build and push to ECR
     runs-on: ubuntu-latest
-    environment: production
+    environment: development
     needs: [test]
-    defaults:
-      run:
-        working-directory: application/
     steps:
 
     - name: Set image hash to env
@@ -56,6 +53,7 @@ jobs:
       run: echo "GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
   
     - name: Configure AWS Credentials
+      id: configure-aws-credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
@@ -79,6 +77,7 @@ jobs:
         docker push ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ env.GIT_HASH }}
 
     - name: Scan image with Trivy
+      id: scan-image
       uses: aquasecurity/trivy-action@0.28.0
       with:
         image-ref: ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ env.GIT_HASH }}
