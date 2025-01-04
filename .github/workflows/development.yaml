@@ -41,8 +41,8 @@ jobs:
         npm i jest
         npm run coverage
 
-  build:
-    name: Build and Push to GCR
+  build-and-push:
+    name: Build and push to ECR
     runs-on: ubuntu-latest
     environment: production
     needs: [test]
@@ -74,7 +74,7 @@ jobs:
         docker build -t $ECR_REGISTRY/$IMAGE_NAME:${{ env.GIT_HASH }} .
 
         # echo "Pushing image $IMAGE_NAME:${{ env.GIT_HASH }} to AWS ECR"
-        # docker push $ECR_REGISTRY/$IMAGE_NAME:${{ env.GIT_HASH }}
+        docker push $ECR_REGISTRY/$IMAGE_NAME:${{ env.GIT_HASH }}
 
     - name: Scan image with Trivy
       uses: aquasecurity/trivy-action@0.28.0
