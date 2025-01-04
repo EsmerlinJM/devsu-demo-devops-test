@@ -36,14 +36,12 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v2
 
     - name: Build and tag image
-      id: build-image
+      env:
+        IMAGE_NAME: ${{ inputs.image_name }}
       run: |
-        # Build a docker container and push it to ECR
-        echo "Building image ${{ inputs.image_name }}"
-        docker build -t ${{ inputs.image_name }} .
-
-        # echo "Pushing image ${{ inputs.image_name }} to AWS ECR"
-        docker push ${{ inputs.image_name }}
+        echo "Building image $IMAGE_NAME"
+        docker build -t $IMAGE_NAME .
+        docker push $IMAGE_NAME
 
     - name: Scan image with Trivy
       id: scan-image

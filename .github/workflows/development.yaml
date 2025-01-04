@@ -51,7 +51,7 @@ jobs:
     needs:
     - test
     uses: ./.github/workflows/build.yaml
-    secrets: inherit
+    # secrets: inherit
     with:
       working_directory: application
       environment: development
