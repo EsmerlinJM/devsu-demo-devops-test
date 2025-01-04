@@ -48,6 +48,8 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         push: true
+        context: .
+        file: ./Dockerfile
         tags: ${{ secrets.ECR_REPOSITORY_URL }}/${{ inputs.image_name }}:${{ github.sha }}
 
     # - name: Build and tag image
