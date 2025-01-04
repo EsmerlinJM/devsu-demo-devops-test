@@ -50,22 +50,17 @@ jobs:
         REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        docker build -t $REGISTRY/$REPOSITORY/${{ inputs.image_name }}:$IMAGE_TAG .
+        docker push $REGISTRY/$REPOSITORY/${{ inputs.image_name }}:$IMAGE_TAG
 
-    # - name: Build and tag image
-    #   env:
-    #     IMAGE_NAME: ${{ secrets.ECR_REPOSITORY_URL }}/${{ inputs.image_name }}:${{ github.sha }}
-    #   run: |
-    #     echo "Building image $IMAGE_NAME"
-    #     docker build -t $IMAGE_NAME .
-    #     docker push $IMAGE_NAME
+        IMAGE_REF=$REGISTRY/$REPOSITORY/${{ inputs.image_name }}:$IMAGE_TAG 
+        echo "IMAGE_REF=$IMAGE_REF" >> $GITHUB_ENV
 
     - name: Scan image with Trivy
       id: scan-image
       uses: aquasecurity/trivy-action@0.28.0
       with:
-        image-ref: ${{ inputs.image_name }}
+        image-ref: ${{ env.IMAGE_REF }}
         format: "table"
         severity: "CRITICAL,HIGH"
         vuln-type: 'os,library'
