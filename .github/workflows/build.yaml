@@ -18,9 +18,9 @@ jobs:
     name: Build and push to ECR
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
-    defaults:
-      run:
-        working-directory: ${{ inputs.working_directory }}
+    # defaults:
+    #   run:
+    #     working-directory: ${{ inputs.working_directory }}
     steps:
 
     - name: Configure AWS Credentials
