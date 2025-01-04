@@ -32,10 +32,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Audit and fix npm Packages
-      run: |-
-        npm audit
-      continue-on-error: true
+    - name: Clean install modules
+      run: npm ci
     
     - name: Unit Testing and Code Coverage
       run: |-
