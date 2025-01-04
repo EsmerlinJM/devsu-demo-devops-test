@@ -41,25 +41,22 @@ jobs:
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
       
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+    # - name: Set up Docker Buildx
+    #   uses: docker/setup-buildx-action@v3
     
-    - name: Build and push
-      uses: docker/build-push-action@v6
-      with:
-        push: true
-        context: .
-        file: ./Dockerfile
-        target: runner
-        tags: ${{ secrets.ECR_REPOSITORY_URL }}/${{ inputs.image_name }}:${{ github.sha }}
+    # - name: Build and push
+    #   uses: docker/build-push-action@v6
+    #   with:
+    #     push: true
+    #     tags: ${{ secrets.ECR_REPOSITORY_URL }}/${{ inputs.image_name }}:${{ github.sha }}
 
-    # - name: Build and tag image
-    #   env:
-    #     IMAGE_NAME: ${{ secrets.ECR_REPOSITORY_URL }}/${{ inputs.image_name }}:${{ github.sha }}
-    #   run: |
-    #     echo "Building image $IMAGE_NAME"
-    #     docker build -t $IMAGE_NAME .
-    #     docker push $IMAGE_NAME
+    - name: Build and tag image
+      env:
+        IMAGE_NAME: ${{ secrets.ECR_REPOSITORY_URL }}/${{ inputs.image_name }}:${{ github.sha }}
+      run: |
+        echo "Building image $IMAGE_NAME"
+        docker build -t $IMAGE_NAME .
+        docker push $IMAGE_NAME
 
     - name: Scan image with Trivy
       id: scan-image
