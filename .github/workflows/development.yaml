@@ -31,9 +31,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Audit npm Packages
-      run: |-
-        npm audit
+    - name: Audit and fix npm Packages
+      run: |
+        echo "Running npm audit..."
+        npm audit || true
+        echo "Attempting to fix vulnerabilities..."
+        npm audit fix || true
+        echo "Rechecking vulnerabilities after fix..."
+        npm audit || true
       continue-on-error: true
     
     - name: Unit Testing and Code Coverage
@@ -70,17 +75,17 @@ jobs:
         IMAGE_NAME: 'devsu-test-nodejs'
       run: |
         # Build a docker container and push it to ECR
-        echo "Building image ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ env.GIT_HASH }}"
-        docker build -t ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ env.GIT_HASH }} .
+        echo "Building image ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ github.sha }}"
+        docker build -t ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ github.sha }} .
 
-        # echo "Pushing image $IMAGE_NAME:${{ env.GIT_HASH }} to AWS ECR"
-        docker push ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ env.GIT_HASH }}
+        # echo "Pushing image $IMAGE_NAME:${{ github.sha }} to AWS ECR"
+        docker push ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ github.sha }}
 
     - name: Scan image with Trivy
       id: scan-image
       uses: aquasecurity/trivy-action@0.28.0
       with:
-        image-ref: ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ env.GIT_HASH }}
+        image-ref: ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ github.sha }}
         format: "table"
         severity: "CRITICAL,HIGH"
         vuln-type: 'os,library'
