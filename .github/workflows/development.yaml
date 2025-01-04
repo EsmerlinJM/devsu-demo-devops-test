@@ -46,6 +46,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: [test]
+    defaults:
+      run:
+        working-directory: application/
     steps:
 
     - name: Set image hash to env
@@ -66,20 +69,19 @@ jobs:
     - name: Build and tag image
       id: build-image
       env:
-        ECR_REGISTRY: ${{ secrets.ECR_REPOSITORY_URL }}
         IMAGE_NAME: 'devsu-test-nodejs'
       run: |
         # Build a docker container and push it to ECR
-        echo "Building image $ECR_REGISTRY/$IMAGE_NAME:${{ env.GIT_HASH }}"
-        docker build -t $ECR_REGISTRY/$IMAGE_NAME:${{ env.GIT_HASH }} .
+        echo "Building image ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ env.GIT_HASH }}"
+        docker build -t ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ env.GIT_HASH }} .
 
         # echo "Pushing image $IMAGE_NAME:${{ env.GIT_HASH }} to AWS ECR"
-        docker push $ECR_REGISTRY/$IMAGE_NAME:${{ env.GIT_HASH }}
+        docker push ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ env.GIT_HASH }}
 
     - name: Scan image with Trivy
       uses: aquasecurity/trivy-action@0.28.0
       with:
-        image-ref: $ECR_REGISTRY/$IMAGE_NAME:${{ env.GIT_HASH }}
+        image-ref: ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ env.GIT_HASH }}
         format: "table"
         severity: "CRITICAL,HIGH"
         vuln-type: 'os,library'
