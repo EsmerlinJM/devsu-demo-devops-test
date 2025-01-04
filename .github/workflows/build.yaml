@@ -43,14 +43,15 @@ jobs:
       
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
-    
-    - name: Build and push
-      uses: docker/build-push-action@v6
-      with:
-        push: true
-        context: .
-        file: ./Dockerfile
-        tags: ${{ secrets.ECR_REPOSITORY_URL }}/${{ inputs.image_name }}:${{ github.sha }}
+
+    - name: Build, tag, and push docker image to Amazon ECR
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
     # - name: Build and tag image
     #   env:
