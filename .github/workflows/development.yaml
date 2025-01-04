@@ -55,6 +55,7 @@ jobs:
       working_directory: application
       environment: development
       image_name: devsu-test-nodejs
+    secrets: inherit
     
 
     
