@@ -51,7 +51,8 @@ jobs:
     needs:
     - test
     uses: ./.github/workflows/build.yaml
-    # secrets: inherit
+    secrets:
+      ECR_REPOSITORY_URL: ${{ secrets.ECR_REPOSITORY_URL }}
     with:
       working_directory: application
       environment: development
