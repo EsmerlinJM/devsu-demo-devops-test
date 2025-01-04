@@ -45,7 +45,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         push: true
-        context: .
+        context: ${{ inputs.working_directory }}
         file: ./Dockerfile
         target: runner
         tags: ${{ secrets.ECR_REPOSITORY_URL }}/${{ inputs.image_name }}:${{ github.sha }}
