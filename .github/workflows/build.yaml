@@ -1,0 +1,56 @@
+name: Build and Push Image
+on:
+  workflow_call:
+    inputs:
+      image_name:
+        required: true
+        type: string
+      working_directory:
+        required: true
+        type: string
+      environment:
+        required: false
+        type: string
+        default: staging
+
+jobs:
+  build-and-push:
+    name: Build and push to ECR
+    runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+    steps:
+
+    - name: Configure AWS Credentials
+      id: configure-aws-credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build and tag image
+      id: build-image
+      run: |
+        # Build a docker container and push it to ECR
+        echo "Building image ${{ inputs.image_name }}"
+        docker build -t ${{ inputs.image_name }} .
+
+        # echo "Pushing image ${{ inputs.image_name }} to AWS ECR"
+        docker push ${{ inputs.image_name }}
+
+    - name: Scan image with Trivy
+      id: scan-image
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        image-ref: ${{ inputs.image_name }}
+        format: "table"
+        severity: "CRITICAL,HIGH"
+        vuln-type: 'os,library'
+        exit-code: 1

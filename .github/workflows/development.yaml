@@ -1,5 +1,6 @@
 name: Deploy development enviroment
 on:
+  workflow_dispatch:
   pull_request:
     branches:
     - main
@@ -47,52 +48,15 @@ jobs:
         npm run coverage
 
   build-and-push:
-    name: Build and push to ECR
-    runs-on: ubuntu-24.04
-    environment: development
-    defaults:
-      run:
-        working-directory: .
-    needs: [test]
-    steps:
-
-    - name: Set image hash to env
-      id: vars
-      run: echo "GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
-  
-    - name: Configure AWS Credentials
-      id: configure-aws-credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
-    - name: Build and tag image
-      id: build-image
-      env:
-        IMAGE_NAME: 'devsu-test-nodejs'
-      run: |
-        # Build a docker container and push it to ECR
-        echo "Building image ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ github.sha }}"
-        docker build -t ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ github.sha }} .
-
-        # echo "Pushing image $IMAGE_NAME:${{ github.sha }} to AWS ECR"
-        docker push ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ github.sha }}
-
-    - name: Scan image with Trivy
-      id: scan-image
-      uses: aquasecurity/trivy-action@0.28.0
-      with:
-        image-ref: ${{ secrets.ECR_REPOSITORY_URL }}/$IMAGE_NAME:${{ github.sha }}
-        format: "table"
-        severity: "CRITICAL,HIGH"
-        vuln-type: 'os,library'
-        exit-code: 1
+    needs:
+    - test
+    uses: ./.github/workflows/build.yaml
+    secrets: inherit
+    with:
+      working_directory: application
+      environment: development
+      image_name: ${{ secrets.ECR_REPOSITORY_URL }}/devsu-test-nodejs:${{ github.sha }}
+    
 
     
 
