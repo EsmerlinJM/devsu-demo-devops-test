@@ -18,10 +18,13 @@ jobs:
     name: Build and push to ECR
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
-    # defaults:
-    #   run:
-    #     working-directory: ${{ inputs.working_directory }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
     steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
 
     - name: Configure AWS Credentials
       id: configure-aws-credentials
@@ -45,7 +48,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         push: true
-        context: ${{ inputs.working_directory }}
+        context: .
         file: ./Dockerfile
         target: runner
         tags: ${{ secrets.ECR_REPOSITORY_URL }}/${{ inputs.image_name }}:${{ github.sha }}
