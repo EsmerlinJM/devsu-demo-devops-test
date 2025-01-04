@@ -37,7 +37,7 @@ jobs:
 
     - name: Build and tag image
       env:
-        IMAGE_NAME: ${{ inputs.image_name }}
+        IMAGE_NAME: ${{ secrets.ECR_REPOSITORY_URL }}/${{ inputs.image_name }}:${{ github.sha }}
       run: |
         echo "Building image $IMAGE_NAME"
         docker build -t $IMAGE_NAME .

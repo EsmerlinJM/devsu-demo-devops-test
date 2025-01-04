@@ -56,7 +56,7 @@ jobs:
     with:
       working_directory: application
       environment: development
-      image_name: ${{ secrets.ECR_REPOSITORY_URL }}/devsu-test-nodejs:${{ github.sha }}
+      image_name: devsu-test-nodejs
     
 
     
