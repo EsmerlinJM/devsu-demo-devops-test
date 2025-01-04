@@ -1,4 +1,4 @@
-name: Deploy deployment enviroment
+name: Deploy development enviroment
 on:
   pull_request:
     branches:
