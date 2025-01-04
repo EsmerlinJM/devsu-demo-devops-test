@@ -60,7 +60,7 @@ jobs:
       id: scan-image
       uses: aquasecurity/trivy-action@0.28.0
       with:
-        image-ref: ${{ inputs.image_name }}
+        image-ref: ${{ env.IMAGE_REF }}
         format: "table"
         severity: "CRITICAL,HIGH"
         vuln-type: 'os,library'
