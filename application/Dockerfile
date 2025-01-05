@@ -9,6 +9,10 @@ ARG WORK_DIR
 ARG USER
 ARG PORT
 
+RUN mkdir -p ${WORK_DIR} && \
+    chown -R ${USER}:${USER} ${WORK_DIR} && \
+    chmod -R 744 ${WORK_DIR}
+
 # Building stage with caches for reinstall dependecies.
 FROM base AS deps
 WORKDIR ${WORK_DIR}
@@ -32,11 +36,6 @@ ARG PORT
 ENV DATABASE_NAME ${DATABASE_NAME}
 ENV DATABASE_USER ${DATABASE_USER}
 ENV DATABASE_PASSWORD ${DATABASE_PASSWORD}
-
-RUN addgroup -S ${USER} && \
-    adduser -S ${USER} -G ${USER} && \
-    chown -R ${USER}:${USER} ${WORK_DIR} && \
-    chmod -R 744 ${WORK_DIR}
 
 WORKDIR ${WORK_DIR}
 USER ${USER}:${USER}
