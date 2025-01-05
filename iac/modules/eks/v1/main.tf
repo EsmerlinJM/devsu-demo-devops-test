@@ -199,23 +199,57 @@ resource "aws_launch_template" "eks_node_group" {
 }
 
 # OICD Configuration
-data "tls_certificate" "eks" {
-  url = aws_eks_cluster.main.identity[0].oidc[0].issuer
+# data "tls_certificate" "eks" {
+#   url = aws_eks_cluster.main.identity[0].oidc[0].issuer
+# }
+
+# resource "aws_iam_openid_connect_provider" "eks" {
+#   client_id_list  = ["sts.amazonaws.com"]
+#   thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
+#   url             = aws_eks_cluster.main.identity[0].oidc[0].issuer
+# }
+
+# resource "aws_eks_identity_provider_config" "eks" {
+#   depends_on = [aws_iam_openid_connect_provider.eks]
+
+#   cluster_name = aws_eks_cluster.main.name
+
+#   oidc {
+#     identity_provider_config_name = "oidc"
+#     client_id                     = "sts.amazonaws.com"
+#     issuer_url                    = aws_eks_cluster.main.identity[0].oidc[0].issuer
+#   }
+# }
+
+# data "tls_certificate" "eks" {
+#   url = aws_eks_cluster.main.identity[0].oidc[0].issuer
+# }
+
+variable "eks_oidc_root_ca_thumbprint" {
+  type        = string
+  description = "Thumbprint of Root CA for EKS OIDC, Valid until 2037"
+  default     = "9e99a48a9960b14926bb7f3b02e22da2b0ab7280"
 }
 
-resource "aws_iam_openid_connect_provider" "eks" {
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
+resource "aws_iam_openid_connect_provider" "oidc_provider" {
+  client_id_list  = ["sts.${data.aws_partition.current.dns_suffix}"]
+  thumbprint_list = [var.eks_oidc_root_ca_thumbprint]
   url             = aws_eks_cluster.main.identity[0].oidc[0].issuer
 }
 
-resource "aws_eks_identity_provider_config" "eks" {
-  cluster_name = aws_eks_cluster.main.name
-  oidc {
-    identity_provider_config_name = "oidc"
-    client_id                     = aws_iam_openid_connect_provider.eks.id
-    issuer_url                    = aws_eks_cluster.main.identity[0].oidc[0].issuer
-  }
+output "aws_iam_openid_connect_provider_arn" {
+  description = "AWS IAM Open ID Connect Provider ARN"
+  value = aws_iam_openid_connect_provider.oidc_provider.arn 
+}
+
+locals {
+    aws_iam_oidc_connect_provider_extract_from_arn = element(split("oidc-provider/", "${aws_iam_openid_connect_provider.oidc_provider.arn}"), 1)
+}
+
+
+output "aws_iam_openid_connect_provider_extract_from_arn" {
+  description = "AWS IAM Open ID Connect Provider extract from ARN"
+   value = local.aws_iam_oidc_connect_provider_extract_from_arn
 }
 
 

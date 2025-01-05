@@ -1,0 +1,83 @@
+{{- $name := .Release.Name -}}
+{{- $containerPort := .Values.service.targetPort -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "node-chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.deployment.replicaCount }}
+  {{- end }}
+  strategy:
+    type: {{ .Values.deployment.strategy.type }}
+    {{- if eq .Values.deployment.strategy.type "RollingUpdate" }}
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.strategy.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.strategy.maxUnavailable }}
+    {{- end }}
+  selector:
+    matchLabels:
+      {{- include "node-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "node-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          resources:
+            requests:
+               cpu: {{ .Values.image.requests.cpu }}
+               memory: {{ .Values.image.requests.memory }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+          {{- if .Values.image.env.enabled }}
+          env:
+            {{- range .Values.image.env.configMaps }}
+              - name: {{ .name }}
+                valueFrom:
+                  configMapKeyRef:
+                    name: {{ $name }}
+                    key: {{ .keyRef }}
+            {{- end }}
+            {{- range .Values.image.env.secrets }}
+              - name: {{ .name }}
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ $name }}
+                    key: {{ .keyRef }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.probes.enabled }}
+          {{- with .Values.probes.liveness }}
+          livenessProbe:
+            httpGet:
+              path: {{ .path }}
+              port: {{ $containerPort }}            
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            periodSeconds: {{ .periodSeconds }}
+          {{- end }}
+          {{- with .Values.probes.readiness }}
+          readinessProbe:
+            httpGet:
+              path: {{ .path }}
+              port: {{ $containerPort }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            periodSeconds: {{ .periodSeconds }}
+          {{- end }}
+          {{- with .Values.probes.startup }}
+          startupProbe:
+            httpGet:
+              path: {{ .path }}
+              port: {{ $containerPort }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds }}
+          {{- end }}
+          {{- end }}
+      imagePullSecrets:
+        - name: regcred

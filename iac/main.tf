@@ -32,27 +32,27 @@ provider "aws" {
   }
 }
 
-# module "vpc" {
-#   source = "./modules/vpc/v1"
+module "vpc" {
+  source = "./modules/vpc/v1"
 
-#   vpc_name             = "${var.cluster_name}-vpc"
-#   cidr_block           = "10.0.0.0/16"
-#   nat_gateway          = true
-#   enable_dns_support   = true
-#   enable_dns_hostnames = true
+  vpc_name             = "${var.cluster_name}-vpc"
+  cidr_block           = "10.0.0.0/16"
+  nat_gateway          = true
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
-#   public_subnet_count  = 3
-#   private_subnet_count = 3
-#   public_subnet_tags = {
-#     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-#     "kubernetes.io/role/elb"                    = "1"
-#   }
+  public_subnet_count  = 3
+  private_subnet_count = 3
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                    = "1"
+  }
 
-#   private_subnet_tags = {
-#     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-#     "kubernetes.io/role/internal-elb"           = "1"
-#   }
-# }
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"           = "1"
+  }
+}
 
 module "ecr" {
   source = "./modules/ecr/v1"
@@ -61,22 +61,22 @@ module "ecr" {
   ecr_repository_name = var.ecr_repository_name
 }
 
-# module "eks" {
-#   source = "./modules/eks/v1"
+module "eks" {
+  source = "./modules/eks/v1"
 
-#   region          = var.region
-#   cluster_name    = var.cluster_name
-#   private_subnets = module.vpc.private_subnets
-#   public_subnets  = module.vpc.public_subnets
-#   vpc_id          = module.vpc.vpc_id
+  region          = var.region
+  cluster_name    = var.cluster_name
+  private_subnets = module.vpc.private_subnets
+  public_subnets  = module.vpc.public_subnets
+  vpc_id          = module.vpc.vpc_id
 
-#   managed_node_groups = {
-#     demo_group = {
-#       name           = "devsu-ng"
-#       desired_size   = 1
-#       min_size       = 1
-#       max_size       = 2
-#       instance_types = ["t3.small"]
-#     }
-#   }
-# }
+  managed_node_groups = {
+    demo_group = {
+      name           = "devsu-ng"
+      desired_size   = 1
+      min_size       = 1
+      max_size       = 2
+      instance_types = ["t3.small"]
+    }
+  }
+}

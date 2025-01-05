@@ -35,10 +35,10 @@ output "cluster_auth_token" {
 
 output "oidc_provider_arn" {
   description = "The OIDC ARN of the Cluster"
-  value       = aws_iam_openid_connect_provider.eks.arn
+  value       = aws_iam_openid_connect_provider.oidc_provider.arn
 }
 
 output "oidc_provider_id" {
   description = "The OIDC ID of the Cluster"
-  value       = aws_iam_openid_connect_provider.eks.id
+  value       = aws_iam_openid_connect_provider.oidc_provider.id
 }
