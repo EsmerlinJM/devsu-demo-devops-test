@@ -43,7 +43,9 @@ jobs:
 
     - name: Get short SHA for deployment name and namespace
       id: short_sha
-      run: echo "SHORT_SHA=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_ENV
+      run: | 
+        SHORT_SHA=$(git rev-parse --short $GITHUB_SHA)
+        echo "short_sha_value=$SHORT_SHA" >> "$GITHUB_OUTPUT"
 
   build-and-push:
     needs:
@@ -66,9 +68,9 @@ jobs:
       environment: development
       image_tag: ${{ needs.build-and-push.ouputs.image_tag }}
       image_repository: ${{ needs.build-and-push.ouputs.image_repository }}
-      deployment_name: devsu-test-nodejs-${{ env.SHORT_SHA }}
+      deployment_name: devsu-test-nodejs-${{ steps.short_sha.outputs.short_sha_value }}
       service_type: LoadBalancer
-      namespace: development-${{ env.SHORT_SHA }}
+      namespace: development-${{ steps.short_sha.outputs.short_sha_value }}
     secrets: inherit
     
 
