@@ -62,21 +62,21 @@ jobs:
     secrets: inherit
     
 
-  # deploy:
-  #   if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
-  #   needs:
-  #   - test
-  #   - build-and-push
-  #   uses: ./.github/workflows/deploy.yaml
-  #   with:
-  #     working_directory: application/helmchart
-  #     environment: development
-  #     image_tag: ${{ needs.build-and-push.ouputs.image_tag }}
-  #     image_repository: ${{ needs.build-and-push.ouputs.image_repository }}
-  #     deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
-  #     service_type: LoadBalancer
-  #     namespace: development-${{ needs.test.outputs.short_sha }}
-  #   secrets: inherit
+  deploy:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
+    needs:
+    - test
+    - build-and-push
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      working_directory: application/helmchart
+      environment: development
+      image_tag: ${{ needs.build-and-push.ouputs.image_tag }}
+      image_repository: ${{ needs.build-and-push.ouputs.image_repository }}
+      deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
+      service_type: LoadBalancer
+      namespace: development-${{ needs.test.outputs.short_sha }}
+    secrets: inherit
     
 
     
