@@ -68,7 +68,7 @@ jobs:
       environment: development
       image_tag: ${{ needs.build-and-push.ouputs.image_tag }}
       image_repository: ${{ needs.build-and-push.ouputs.image_repository }}
-      deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}}
+      deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
       service_type: LoadBalancer
       namespace: development-${{ needs.test.outputs.short_sha }}
     secrets: inherit
