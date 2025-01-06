@@ -56,7 +56,7 @@ jobs:
       id: image_info
       run: |
         echo "image_repository=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY || 'devsu-test-repository' }}" >> $GITHUB_OUTPUT
-        echo "image_tag=devsu-test-nodejs-${{ needs.test.outputs.short_sha }}" >> $GITHUB_OUTPUT
+        echo "image_tag=devsu-test-nodejs-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
 
 
   build-and-push:
