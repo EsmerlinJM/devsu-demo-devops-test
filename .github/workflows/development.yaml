@@ -11,6 +11,7 @@ on:
       - "package-lock.json"
       - "Dockerfile"
       - ".github/workflows/development.yml"
+      - ".github/workflows/deploy.yml"
       - ".github/workflows/clean.yml"
     types: [opened, synchronize, reopened, labeled]
 
@@ -48,6 +49,21 @@ jobs:
       working_directory: application/
       environment: development
       image_name: devsu-test-nodejs
+    secrets: inherit
+
+  deploy:
+    needs:
+    - test
+    - build-and-push
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      working_directory: application/helmchart
+      environment: development
+      image_tag: ${{ needs.build-and-push.ouputs.image_tag }}
+      image_repository: ${{ needs.build-and-push.ouputs.image_repository }}
+      deployment_name: devsu-test-nodejs-$(git rev-parse --short ${{ github.sha }})
+      service_type: LoadBalancer
+      namespace: development-$(git rev-parse --short ${{ github.sha }})
     secrets: inherit
     
 

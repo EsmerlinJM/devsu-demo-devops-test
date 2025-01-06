@@ -58,15 +58,6 @@ service:
   externalIp:
   annotations: {}
 
-ingress:
-  enabled: false
-  className: ""
-  annotations:
-  hosts:
-    paths:
-      path: "/"
-      pathType: "Prefix"
-
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -87,17 +78,17 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 probes:
-  enabled: true
+  enabled: false
   liveness:
-    path: /api/ping
+    path: /ping
     initialDelaySeconds: 20
     periodSeconds: 60
   readiness:
-    path: /api/ping
+    path: /ping
     initialDelaySeconds: 5
     periodSeconds: 5
   startup:
-    path: /api/ping
+    path: /ping
     failureThreshold: 3
     periodSeconds: 3
 
@@ -112,3 +103,20 @@ secret:
     database_name: ""
     database_user: ""
     database_password: ""
+
+ingress:
+  enabled: false
+  className: "alb"
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: "/ping"
+    alb.ingress.kubernetes.io/healthcheck-port: "8000"
+    alb.ingress.kubernetes.io/success-codes: "301"
+  hosts:
+    - host: "test.host"
+      paths:
+        - path: /(.*)
+          pathType: ImplementationSpecific
+  tls: []
