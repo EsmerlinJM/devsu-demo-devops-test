@@ -48,7 +48,7 @@ jobs:
       id: shorten_sha
       run: |
         SHORTEN_SHA=$(echo "${{ github.head_ref }}" | sha256sum | cut -c 1-5)
-        echo "shorten_sha=$SHORTEN_SHA" >> $GITHUB_OUTPUT
+        echo "short_sha=$SHORTEN_SHA" >> $GITHUB_OUTPUT
 
   build-and-push:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
