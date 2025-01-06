@@ -71,8 +71,8 @@ jobs:
     with:
       working_directory: application/helmchart
       environment: development
-      image_tag: ${{ needs.build-and-push.outputs.ecr_image_tag }}
-      image_repository: ${{ needs.build-and-push.outputs.ecr_image_repository }}
+      image_tag: ${{ needs.build-and-push.outputs.image_tag }}
+      image_repository: ${{ needs.build-and-push.outputs.image_repository }}
       deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
       service_type: LoadBalancer
       namespace: development-${{ needs.test.outputs.short_sha }}
