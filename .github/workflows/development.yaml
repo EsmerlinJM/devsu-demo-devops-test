@@ -79,7 +79,6 @@ jobs:
       working_directory: application/helmchart
       environment: development
       image_tag: ${{ needs.test.outputs.image_tag }}
-      # image_repository: ${{ needs.test.outputs.image_repository }}
       deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
       service_type: ClusterIP
       namespace: development-${{ needs.test.outputs.short_sha }}
