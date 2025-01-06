@@ -72,6 +72,11 @@ jobs:
         echo "image_tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
         echo "image_repository=$REGISTRY/$REPOSITORY" >> "$GITHUB_OUTPUT"
 
+    - name: Debug Outputs
+      run: |
+        echo "Image Tag: ${{ steps.build_and_push.outputs.image_tag }}"
+        echo "Image Repository: ${{ steps.build_and_push.outputs.image_repository }}"
+
     - name: Scan image with Trivy
       id: scan-image
       uses: aquasecurity/trivy-action@0.28.0
