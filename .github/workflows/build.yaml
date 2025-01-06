@@ -12,13 +12,6 @@ on:
         required: false
         type: string
         default: staging
-    outputs:
-      image_repository:
-        description: "All paths extracted for working directories"
-        value: ${{ jobs.build-and-push.outputs.image_repository }}
-      image_tag:
-        description: "All paths extracted for working directories"
-        value: ${{ jobs.build-and-push.outputs.image_tag }}
 
 jobs:
   build-and-push:
@@ -28,10 +21,6 @@ jobs:
     defaults:
       run:
         working-directory: ${{ inputs.working_directory }}
-
-    outputs:
-      image_repository: ${{ steps.build_and_push.outputs.image_repository }}
-      image_tag: ${{ steps.build_and_push.outputs.image_tag }}
 
     steps:
 
@@ -60,7 +49,7 @@ jobs:
       id: build_and_push
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        REPOSITORY: ${{ secrets.REPOSITORY }}
+        REPOSITORY: ${{ secrets.ECR_REPOSITORY || 'devsu-test-repository' }}
         IMAGE_TAG: ${{ inputs.image_tag }}
       run: |
         docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
@@ -68,14 +57,6 @@ jobs:
 
         IMAGE_REF=$REGISTRY/$REPOSITORY:$IMAGE_TAG
         echo "IMAGE_REF=$IMAGE_REF" >> $GITHUB_ENV
-
-        echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-        echo "image_repository=$REGISTRY/$REPOSITORY" >> $GITHUB_OUTPUT
-
-    - name: Debug Outputs
-      run: |
-        echo "Image Tag: ${{ steps.build_and_push.outputs.image_tag }}"
-        echo "Image Repository: ${{ steps.build_and_push.outputs.image_repository }}"
 
     - name: Scan image with Trivy
       id: scan-image

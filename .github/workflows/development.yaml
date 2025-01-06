@@ -31,6 +31,8 @@ jobs:
         working-directory: application
     outputs:
       short_sha: ${{ steps.shorten_sha.outputs.short_sha }}
+      image_tag: ${{ steps.image_info.outputs.image_tag }}
+      image_repository: ${{ steps.image_info.outputs.image_repository }}
 
     steps:
     - name: Checkout
@@ -50,6 +52,13 @@ jobs:
         SHORTEN_SHA=$(echo "${{ github.head_ref }}" | sha256sum | cut -c 1-5)
         echo "short_sha=$SHORTEN_SHA" >> $GITHUB_OUTPUT
 
+    - name: Setting image info
+      id: image_info
+      run: |
+        echo "image_repository=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY || 'devsu-test-repository' }}" >> $GITHUB_OUTPUT
+        echo "image_tag=devsu-test-nodejs-${{ needs.test.outputs.short_sha }}" >> $GITHUB_OUTPUT
+
+
   build-and-push:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
     needs:
@@ -58,7 +67,7 @@ jobs:
     with:
       working_directory: application/
       environment: development
-      image_tag: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
+      image_tag: ${{ needs.test.outputs.image_tag }}
     secrets: inherit
     
 
@@ -71,8 +80,8 @@ jobs:
     with:
       working_directory: application/helmchart
       environment: development
-      image_tag: ${{ needs.build-and-push.outputs.image_tag }}
-      image_repository: ${{ needs.build-and-push.outputs.image_repository }}
+      image_tag: ${{ needs.test.outputs.image_tag }}
+      image_repository: ${{ needs.test.outputs.image_repository }}
       deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
       service_type: LoadBalancer
       namespace: development-${{ needs.test.outputs.short_sha }}
