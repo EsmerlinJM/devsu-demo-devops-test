@@ -79,5 +79,3 @@ spec:
             periodSeconds: {{ .periodSeconds }}
           {{- end }}
           {{- end }}
-      imagePullSecrets:
-        - name: regcred
