@@ -51,7 +51,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     - name: Update kubeconfig file with EKS
-      run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.CLUSTER_NAME }}
+      run: aws eks update-kubeconfig --region "${{ secrets.AWS_REGION || 'us-east-1' }}"" --name "${{ secrets.CLUSTER_NAME }}"
 
     - name: Deploy helm chart
       run: |
