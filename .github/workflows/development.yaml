@@ -22,6 +22,7 @@ permissions:
 
 jobs:
   test:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
     name: 'Test project'
     runs-on: ubuntu-24.04
     environment: development
@@ -45,9 +46,12 @@ jobs:
 
     - name: Shorten commit SHA
       id: shorten_sha
-      run: echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      run: |
+        IMAGE_TAG=$(echo "${{ github.head_ref || github.ref }}" | sha256sum | cut -c 1-5)
+        echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   build-and-push:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
     needs:
     - test
     uses: ./.github/workflows/build.yaml
@@ -59,6 +63,7 @@ jobs:
     
 
   deploy:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
     needs:
     - test
     - build-and-push

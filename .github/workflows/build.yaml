@@ -30,8 +30,8 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
 
     outputs:
-      image_repository: ${{ steps.setting_values.outputs.image_repository }}
-      image_tag: ${{ steps.setting_values.outputs.image_tag }}
+      image_repository: ${{ steps.build_and_push.outputs.image_repository }}
+      image_tag: ${{ steps.build_and_push.outputs.image_tag }}
 
     steps:
 

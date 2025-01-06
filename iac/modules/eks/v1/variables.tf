@@ -51,7 +51,7 @@ variable "managed_node_groups" {
 variable "cluster_addons" {
   description = "List of strings specifying cluster addons"
   type        = list(string)
-  default     = ["vpc-cni", "kube-proxy", "coredns", "aws-ebs-csi-driver"]
+  default     = ["vpc-cni", "kube-proxy", "coredns", "aws-ebs-csi-driver", "metrics-server"]
 }
 
 variable "enabled_cluster_log_types" {
@@ -59,3 +59,18 @@ variable "enabled_cluster_log_types" {
   type        = list(string)
   default     = ["audit", "api", "authenticator"]
 }
+
+variable "environment" {
+  description = "Environment Variable used as a prefix"
+  type = string
+  default = "dev"
+}
+
+locals {
+  environment = var.environment
+  name = "${var.environment}"
+  common_tags = {
+    environment = local.environment
+  }
+  eks_cluster_name = "${local.name}-${var.cluster_name}"  
+} 

@@ -73,9 +73,9 @@ module "eks" {
   managed_node_groups = {
     demo_group = {
       name           = "devsu-ng"
-      desired_size   = 1
+      desired_size   = 2
       min_size       = 1
-      max_size       = 2
+      max_size       = 3
       instance_types = ["t3.small"]
     }
   }
