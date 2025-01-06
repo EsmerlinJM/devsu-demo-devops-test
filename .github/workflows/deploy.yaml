@@ -62,9 +62,9 @@ jobs:
         --set image.tag="${{ inputs.image_tag }}" \
         --set configMap.data.environment="${{ inputs.environment }}" \
         --set service.type="${{ inputs.service_type }}" \
-        --set secret.data.database_name="${{ secrets.DATABASE_NAME | base64 }}" \
-        --set secret.data.database_user="${{ secrets.DATABASE_USER | base64 }}" \
-        --set secret.data.database_password="${{ secrets.DATABASE_PASSWORD | base64 }}" \
+        --set secret.data.database_name="${{ secrets.DATABASE_NAME }}" \
+        --set secret.data.database_user="${{ secrets.DATABASE_USER }}" \
+        --set secret.data.database_password="${{ secrets.DATABASE_PASSWORD }}"
         --set ingress.enabled=true
 
 
