@@ -62,7 +62,8 @@ jobs:
         --set secret.data.database_name="${{ secrets.DATABASE_NAME }}" \
         --set secret.data.database_user="${{ secrets.DATABASE_USER }}" \
         --set secret.data.database_password="${{ secrets.DATABASE_PASSWORD }}" \
-        --set ingress.enabled=true
-        --set ingress.annotations."alb\.ingress\.kubernetes\.io/load-balancer-name"="${{ inputs.deployment_name }}-lb"
+        --set ingress.enabled=true \
+        --set ingress.annotations."alb\.ingress\.kubernetes\.io/load-balancer-name"="${{ inputs.deployment_name }}-lb" \
         --set ingress.tls[0].hosts[0]="${{ inputs.deployment_name }}.${{ secrets.DOMAIN_NAME }}" \
-        --set ingress.tls[0].secretName="sample-app-tls"
+        --set ingress.tls[0].secretName="sample-app-tls" \
+        --set ingress.annotations."external-dns\.alpha\.kubernetes\.io/hostname"="${{ inputs.deployment_name }}.${{ secrets.DOMAIN_NAME }}"
