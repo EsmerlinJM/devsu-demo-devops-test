@@ -18,9 +18,6 @@ jobs:
     name: Build and push to ECR
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
-    permissions:
-      contents: read
-      security-events: write
     defaults:
       run:
         working-directory: ${{ inputs.working_directory }}
