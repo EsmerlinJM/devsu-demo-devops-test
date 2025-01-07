@@ -70,9 +70,9 @@ jobs:
       working_directory: application/helmchart
       environment: staging
       image_tag: ${{ needs.test.outputs.image_tag }}
-      deployment_name: latest
+      deployment_name: devsu-test-nodejs-staging
       service_type: NodePort
-      namespace: staging
+      namespace: devsu-test-nodejs-staging
     secrets: inherit
     
 
