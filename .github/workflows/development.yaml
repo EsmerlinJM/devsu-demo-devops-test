@@ -10,9 +10,9 @@ on:
       - "package.json"
       - "package-lock.json"
       - "Dockerfile"
-      - ".github/workflows/development.yml"
-      - ".github/workflows/deploy.yml"
-      - ".github/workflows/clean.yml"
+      - ".github/workflows/development.yaml"
+      - ".github/workflows/deploy.yaml"
+      - ".github/workflows/clean.yaml"
     types: [opened, synchronize, reopened, labeled]
 
 permissions:
