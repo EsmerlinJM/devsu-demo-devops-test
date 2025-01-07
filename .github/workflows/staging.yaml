@@ -1,7 +1,7 @@
-name: Deploy development enviroment
+name: Deploy staging enviroment
 on:
   workflow_dispatch:
-  pull_request:
+  push:
     branches:
     - main
     paths:
@@ -13,7 +13,7 @@ on:
       - ".github/workflows/development.yaml"
       - ".github/workflows/deploy.yaml"
       - ".github/workflows/clean.yaml"
-    types: [opened, synchronize, reopened, labeled]
+      - ".github/workflows/staging.yaml"
 
 permissions:
   id-token: write
@@ -22,15 +22,13 @@ permissions:
 
 jobs:
   test:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
     name: 'Test project'
     runs-on: ubuntu-24.04
-    environment: development
+    environment: staging
     defaults:
       run:
         working-directory: application
     outputs:
-      short_sha: ${{ steps.shorten_sha.outputs.short_sha }}
       image_tag: ${{ steps.image_info.outputs.image_tag }}
 
     steps:
@@ -45,43 +43,35 @@ jobs:
         npm i jest
         npm run coverage
 
-    - name: Shorten commit SHA
-      id: shorten_sha
-      run: |
-        SHORTEN_SHA=$(echo "${{ github.head_ref }}" | sha256sum | cut -c 1-5)
-        echo "short_sha=$SHORTEN_SHA" >> $GITHUB_OUTPUT
-
     - name: Setting image info
       id: image_info
       run: |
-        echo "image_tag=devsu-test-nodejs-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
+        echo "image_tag=latest" >> $GITHUB_OUTPUT
 
 
   build-and-push:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
     needs:
     - test
     uses: ./.github/workflows/build.yaml
     with:
       working_directory: application/
-      environment: development
+      environment: staging
       image_tag: ${{ needs.test.outputs.image_tag }}
     secrets: inherit
     
 
   deploy:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
     needs:
     - test
     - build-and-push
     uses: ./.github/workflows/deploy.yaml
     with:
       working_directory: application/helmchart
-      environment: development
+      environment: staging
       image_tag: ${{ needs.test.outputs.image_tag }}
-      deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
+      deployment_name: latest
       service_type: NodePort
-      namespace: development-${{ needs.test.outputs.short_sha }}
+      namespace: staging
     secrets: inherit
     
 
