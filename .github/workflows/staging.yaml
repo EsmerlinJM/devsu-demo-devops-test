@@ -1,0 +1,79 @@
+name: Deploy staging enviroment
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+    paths:
+      - application/**/*
+      - "**/*.js"
+      - "package.json"
+      - "package-lock.json"
+      - "Dockerfile"
+      - ".github/workflows/development.yaml"
+      - ".github/workflows/deploy.yaml"
+      - ".github/workflows/clean.yaml"
+      - ".github/workflows/staging.yaml"
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  test:
+    name: 'Test project'
+    runs-on: ubuntu-24.04
+    environment: staging
+    defaults:
+      run:
+        working-directory: application
+    outputs:
+      image_tag: ${{ steps.image_info.outputs.image_tag }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Clean install modules
+      run: npm ci
+    
+    - name: Unit Testing and Code Coverage
+      run: |-
+        npm i jest
+        npm run coverage
+
+    - name: Setting image info
+      id: image_info
+      run: |
+        echo "image_tag=latest" >> $GITHUB_OUTPUT
+
+
+  build-and-push:
+    needs:
+    - test
+    uses: ./.github/workflows/build.yaml
+    with:
+      working_directory: application/
+      environment: staging
+      image_tag: ${{ needs.test.outputs.image_tag }}
+    secrets: inherit
+    
+
+  deploy:
+    needs:
+    - test
+    - build-and-push
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      working_directory: application/helmchart
+      environment: staging
+      image_tag: ${{ needs.test.outputs.image_tag }}
+      deployment_name: latest
+      service_type: NodePort
+      namespace: staging
+    secrets: inherit
+    
+
+    
+
