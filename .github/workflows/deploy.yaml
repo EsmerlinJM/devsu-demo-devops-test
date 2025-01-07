@@ -63,22 +63,6 @@ jobs:
         --set secret.data.database_user="${{ secrets.DATABASE_USER }}" \
         --set secret.data.database_password="${{ secrets.DATABASE_PASSWORD }}" \
         --set ingress.enabled=true
-
-
-    # - name: Install Karpenter
-    #   uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
-    #   with:
-    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     aws-region: ${{ secrets.AWS_REGION }}
-    #     cluster-name: ${{ secrets.CLUSTER_NAME }}
-    #     helm-wait: true
-    #     namespace: ${{ inputs.namespace }}
-    #     name: ${{ inputs.deployment_name }}
-    #     values: |
-    #       settings.clusterName=${{ vars.CLUSTER_NAME }},
-    #       settings.interruptionQueue=${{ vars.CLUSTER_NAME }}-karpenter,
-    #       controller.resources.requests.cpu=1,
-    #       controller.resources.requests.memory=1Gi,
-    #       controller.resources.limits.cpu=1,
-    #       controller.resources.limits.memory=1Gi
+        --set ingress.annotations."alb\.ingress\.kubernetes\.io/load-balancer-name"="${{ inputs.deployment_name }}-lb"
+        --set ingress.tls[0].hosts[0]="${{ inputs.deployment_name }}.${{ secrets.DOMAIN_NAME }}" \
+        --set ingress.tls[0].secretName="sample-app-tls"
