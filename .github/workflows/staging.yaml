@@ -12,6 +12,7 @@ on:
       - "Dockerfile"
       - ".github/workflows/development.yaml"
       - ".github/workflows/deploy.yaml"
+      - ".github/workflows/build.yaml"
       - ".github/workflows/clean.yaml"
       - ".github/workflows/staging.yaml"
 

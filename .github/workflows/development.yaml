@@ -11,6 +11,7 @@ on:
       - "package-lock.json"
       - "Dockerfile"
       - ".github/workflows/development.yaml"
+      - ".github/workflows/build.yaml"
       - ".github/workflows/deploy.yaml"
       - ".github/workflows/clean.yaml"
     types: [opened, synchronize, reopened, labeled]

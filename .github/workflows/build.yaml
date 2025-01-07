@@ -18,6 +18,9 @@ jobs:
     name: Build and push to ECR
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
+      security-events: write
     defaults:
       run:
         working-directory: ${{ inputs.working_directory }}
@@ -76,3 +79,4 @@ jobs:
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-results.sarif'
+      continue-on-error: true
