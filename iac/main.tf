@@ -80,3 +80,8 @@ module "eks" {
     }
   }
 }
+
+module "acm" {
+  source = "./modules/acm/v1"
+  domain_name = var.domain_name
+}

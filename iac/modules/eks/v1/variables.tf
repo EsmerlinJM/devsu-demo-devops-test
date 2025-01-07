@@ -73,4 +73,10 @@ locals {
     environment = local.environment
   }
   eks_cluster_name = "${local.name}-${var.cluster_name}"  
-} 
+}
+
+variable "domain_name" {
+  default = "esmerlinmieses.com"
+  description = "Domain name"
+  type = string
+}

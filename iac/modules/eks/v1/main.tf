@@ -8,7 +8,6 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.main.token
 }
 
-
 resource "aws_eks_cluster" "main" {
   name                      = var.cluster_name
   role_arn                  = aws_iam_role.eks_cluster_role.arn
@@ -50,7 +49,7 @@ resource "aws_kms_key" "eks_encryption" {
 
 # alias
 resource "aws_kms_alias" "eks_encryption" {
-  name          = "alias/eks/${var.cluster_name}"
+  # name          = "alias/eks/${var.cluster_name}"
   target_key_id = aws_kms_key.eks_encryption.id
 }
 
@@ -198,32 +197,6 @@ resource "aws_launch_template" "eks_node_group" {
   }
 }
 
-# OICD Configuration
-# data "tls_certificate" "eks" {
-#   url = aws_eks_cluster.main.identity[0].oidc[0].issuer
-# }
-
-# resource "aws_iam_openid_connect_provider" "eks" {
-#   client_id_list  = ["sts.amazonaws.com"]
-#   thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
-#   url             = aws_eks_cluster.main.identity[0].oidc[0].issuer
-# }
-
-# resource "aws_eks_identity_provider_config" "eks" {
-#   depends_on = [aws_iam_openid_connect_provider.eks]
-
-#   cluster_name = aws_eks_cluster.main.name
-
-#   oidc {
-#     identity_provider_config_name = "oidc"
-#     client_id                     = "sts.amazonaws.com"
-#     issuer_url                    = aws_eks_cluster.main.identity[0].oidc[0].issuer
-#   }
-# }
-
-# data "tls_certificate" "eks" {
-#   url = aws_eks_cluster.main.identity[0].oidc[0].issuer
-# }
 
 variable "eks_oidc_root_ca_thumbprint" {
   type        = string
@@ -358,6 +331,16 @@ resource "aws_security_group_rule" "worker_node_to_worker_node_ingress_ephemeral
   self              = true
   security_group_id = aws_security_group.eks_nodes_sg.id
   description       = "Allow workers nodes to communicate with each other on ephemeral ports"
+}
+
+resource "aws_security_group_rule" "eks_nodes_ingress_alb" {
+  type                     = "ingress"
+  from_port                = 9443
+  to_port                  = 9443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_nodes_sg.id
+  source_security_group_id = aws_security_group.eks_cluster_sg.id
+  description              = "Allow access from control plane to webhook port of AWS load balancer controller"
 }
 
 resource "aws_security_group_rule" "worker_node_egress_internet" {

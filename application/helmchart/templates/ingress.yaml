@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $name := .Release.Name -}}
-{{- $targetPort := .Values.service.targetPort -}}
+{{- $port := .Values.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -13,6 +13,11 @@ metadata:
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
+  defaultBackend:
+    service:
+      name: {{ $name }}
+      port:
+        number: {{ $port }}
   {{- if .Values.ingress.tls }}
   tls:
     {{- range .Values.ingress.tls }}
@@ -23,19 +28,19 @@ spec:
       secretName: {{ .secretName }}
     {{- end }}
   {{- end }}
-  rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host }}
-      http:
-        paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            pathType: {{ .pathType }}
-            backend:
-              service:
-                name: {{ $name }}
-                port:
-                  number: {{ $targetPort }}
+  # rules:
+  #   {{- range .Values.ingress.hosts }}
+  #   - host: {{ .host }}
+  #     http:
+  #       paths:
+  #         {{- range .paths }}
+  #         - path: {{ .path }}
+  #           pathType: {{ .pathType }}
+  #           backend:
+  #             service:
+  #               name: {{ $name }}
+  #               port:
+  #                 number: {{ $port }}
           {{- end }}
     {{- end }}
 {{- end }}
