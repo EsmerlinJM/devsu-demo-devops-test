@@ -28,3 +28,9 @@ variable "global_tags" {
     "Environment" = "prod"
   }
 }
+
+variable "domain_name" {
+  default = "esmerlinmieses.com"
+  description = "Domain name"
+  type = string
+}

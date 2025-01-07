@@ -8,8 +8,15 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "deps"
+    labels:
+      - "npm"
+      - "dependencies"
+      - "no-action"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    labels:
+      - "dependencies"
+      - "no-action"

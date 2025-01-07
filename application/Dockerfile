@@ -9,6 +9,10 @@ ARG WORK_DIR
 ARG USER
 ARG PORT
 
+RUN mkdir -p ${WORK_DIR} && \
+    chown -R ${USER}:${USER} ${WORK_DIR} && \
+    chmod -R 744 ${WORK_DIR}
+
 # Building stage with caches for reinstall dependecies.
 FROM base AS deps
 WORKDIR ${WORK_DIR}
@@ -28,7 +32,6 @@ FROM base AS runtime
 ARG WORK_DIR
 ARG USER
 ARG PORT
-ARG USER
 
 ENV DATABASE_NAME ${DATABASE_NAME}
 ENV DATABASE_USER ${DATABASE_USER}

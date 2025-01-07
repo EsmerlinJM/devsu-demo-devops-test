@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "node-chart.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      {{- if eq .Values.service.type "NodePort"}}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+  selector:
+    {{- include "node-chart.selectorLabels" . | nindent 4 }}
+  {{- if and (.Values.service.externalIp) (eq .Values.service.type "LoadBalancer") }}
+  externalIPs:
+   - {{ .Values.service.externalIp }}
+  {{- end }}

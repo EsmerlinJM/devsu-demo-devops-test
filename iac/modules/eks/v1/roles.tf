@@ -83,12 +83,12 @@ data "aws_iam_policy_document" "vpc_cni_assume_role_policy" {
 
     condition {
       test     = "StringEquals"
-      variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
+      variable = "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub"
       values   = ["system:serviceaccount:kube-system:aws-node"]
     }
 
     principals {
-      identifiers = [aws_iam_openid_connect_provider.eks.arn]
+      identifiers = [aws_iam_openid_connect_provider.oidc_provider.arn]
       type        = "Federated"
     }
   }
@@ -171,5 +171,5 @@ resource "kubernetes_config_map" "aws_auth" {
       }
     ])
   }
-
 }
+

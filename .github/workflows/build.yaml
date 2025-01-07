@@ -2,7 +2,7 @@ name: Build and Push Image
 on:
   workflow_call:
     inputs:
-      image_name:
+      image_tag:
         required: true
         type: string
       working_directory:
@@ -21,6 +21,7 @@ jobs:
     defaults:
       run:
         working-directory: ${{ inputs.working_directory }}
+
     steps:
 
     - name: Checkout
@@ -45,10 +46,11 @@ jobs:
       uses: docker/setup-buildx-action@v3
 
     - name: Build, tag, and push docker image to Amazon ECR
+      id: build_and_push
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-        IMAGE_TAG: ${{ inputs.image_name }}-${{ github.sha }}
+        REPOSITORY: ${{ secrets.ECR_REPOSITORY || 'devsu-test-repository' }}
+        IMAGE_TAG: ${{ inputs.image_tag }}
       run: |
         docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
