@@ -75,6 +75,8 @@ jobs:
         echo "image_tag=devsu-test-nodejs-dev-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
 
   coverage-scan:
+    needs:
+    - test
     name: SonarQubeScan2
     runs-on: ubuntu-24.04
     steps:
@@ -84,6 +86,7 @@ jobs:
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: application/
