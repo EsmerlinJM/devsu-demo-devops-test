@@ -38,6 +38,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Clean install modules
       run: npm ci
@@ -46,6 +48,13 @@ jobs:
       run: |-
         npm i jest
         npm run coverage
+
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v4.2.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      continue-on-error: true
 
     - name: Shorten commit SHA
       id: shorten_sha
@@ -56,7 +65,7 @@ jobs:
     - name: Setting image info
       id: image_info
       run: |
-        echo "image_tag=devsu-test-nodejs-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
+        echo "image_tag=devsu-test-nodejs-dev-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
 
   build-and-push:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
@@ -79,9 +88,9 @@ jobs:
       working_directory: application/helmchart
       environment: development
       image_tag: ${{ needs.test.outputs.image_tag }}
-      deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
+      deployment_name: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
       service_type: NodePort
-      namespace: development
+      namespace: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
     secrets: inherit
 
   post-deploy:
@@ -93,7 +102,7 @@ jobs:
     uses: ./.github/workflows/post-deploy.yaml
     with:
       environment: development
-      deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
+      deployment_name: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
     secrets: inherit
     
 
