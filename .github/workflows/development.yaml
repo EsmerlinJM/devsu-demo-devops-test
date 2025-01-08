@@ -89,7 +89,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: application/
+          projectBaseDir: application/src
 
   # build-and-push:
   #   if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
