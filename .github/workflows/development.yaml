@@ -89,6 +89,7 @@ jobs:
     needs:
     - test
     - build-and-push
+    - deploy
     uses: ./.github/workflows/post-deploy.yaml
     with:
       environment: development

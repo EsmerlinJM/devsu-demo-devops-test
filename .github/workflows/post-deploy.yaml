@@ -1,6 +1,7 @@
 name: Post Deployment task
 on:
   workflow_call:
+    inputs:
       environment:
         required: false
         type: string
