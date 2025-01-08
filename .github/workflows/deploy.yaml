@@ -77,4 +77,5 @@ jobs:
         --set ingress.annotations."alb\.ingress\.kubernetes\.io/certificate-arn"="${{ steps.certificate_arn.outputs.certificate_arn }}" \
         --set ingress.tls[0].secretName="${{ inputs.deployment_name }}-tls" \
         --set ingress.annotations."external-dns\.alpha\.kubernetes\.io/hostname"="${{ inputs.deployment_name }}.${{ secrets.DOMAIN_NAME }}" \
-        --set probes.enabled=true
+        --set probes.enabled=true \
+        --wait-for-jobs --atomic --force
