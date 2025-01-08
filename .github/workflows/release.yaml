@@ -1,20 +1,8 @@
-name: Deploy staging enviroment
+name: Deploy release/production enviroment
 on:
   workflow_dispatch:
-  push:
-    branches:
-    - main
-    paths:
-      - application/**/*
-      - "**/*.js"
-      - "package.json"
-      - "package-lock.json"
-      - "Dockerfile"
-      - ".github/workflows/development.yaml"
-      - ".github/workflows/deploy.yaml"
-      - ".github/workflows/build.yaml"
-      - ".github/workflows/clean.yaml"
-      - ".github/workflows/staging.yaml"
+  release:
+    types: [published]
 
 permissions:
   id-token: write
@@ -24,9 +12,8 @@ permissions:
 jobs:
   test:
     name: 'Test project'
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-24.04
-    environment: staging
+    environment: production
     defaults:
       run:
         working-directory: application
@@ -48,46 +35,42 @@ jobs:
     - name: Setting image info
       id: image_info
       run: |
-        echo "image_tag=latest" >> $GITHUB_OUTPUT
+        echo "image_tag=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
 
 
   build-and-push:
-    if: github.event.pull_request.merged == true
     needs:
     - test
     uses: ./.github/workflows/build.yaml
     with:
       working_directory: application/
-      environment: staging
+      environment: production
       image_tag: ${{ needs.test.outputs.image_tag }}
     secrets: inherit
     
-
   deploy:
-    if: github.event.pull_request.merged == true
     needs:
     - test
     - build-and-push
     uses: ./.github/workflows/deploy.yaml
     with:
       working_directory: application/helmchart
-      environment: staging
+      environment: production
       image_tag: ${{ needs.test.outputs.image_tag }}
-      deployment_name: devsu-test-nodejs-staging
+      deployment_name: devsu-test-nodejs-production
       service_type: NodePort
-      namespace: devsu-test-nodejs-staging
+      namespace: devsu-test-nodejs-production
     secrets: inherit
 
   post-deploy:
-    if: github.event.pull_request.merged == true
     needs:
     - test
     - build-and-push
     - deploy
     uses: ./.github/workflows/post-deploy.yaml
     with:
-      environment: staging
-      deployment_name: devsu-test-nodejs-staging
+      environment: production
+      deployment_name: devsu-test-nodejs-production
     secrets: inherit
     
 

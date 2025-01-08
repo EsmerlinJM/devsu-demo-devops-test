@@ -13,6 +13,7 @@ on:
       - ".github/workflows/development.yaml"
       - ".github/workflows/build.yaml"
       - ".github/workflows/deploy.yaml"
+      - ".github/workflows/post-deploy.yaml"
       - ".github/workflows/clean.yaml"
     types: [opened, synchronize, reopened, labeled]
 
@@ -57,7 +58,6 @@ jobs:
       run: |
         echo "image_tag=devsu-test-nodejs-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
 
-
   build-and-push:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
     needs:
@@ -69,7 +69,6 @@ jobs:
       image_tag: ${{ needs.test.outputs.image_tag }}
     secrets: inherit
     
-
   deploy:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
     needs:
@@ -83,6 +82,18 @@ jobs:
       deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
       service_type: NodePort
       namespace: development-${{ needs.test.outputs.short_sha }}
+    secrets: inherit
+
+  post-deploy:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
+    needs:
+    - test
+    - build-and-push
+    - deploy
+    uses: ./.github/workflows/post-deploy.yaml
+    with:
+      environment: development
+      deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
     secrets: inherit
     
 

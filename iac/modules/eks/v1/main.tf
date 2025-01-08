@@ -148,6 +148,10 @@ resource "aws_eks_node_group" "main" {
     version = "$Latest"
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   instance_types       = each.value.instance_types
   ami_type             = var.default_ami_type
   capacity_type        = var.default_capacity_type
@@ -178,11 +182,11 @@ resource "aws_launch_template" "eks_node_group" {
   }
 
   block_device_mappings {
-    device_name = "/dev/xvda" # Adjusted to the common root device name for Linux AMIs
+    device_name = "/dev/xvda" 
 
     ebs {
-      volume_size           = 20    # Disk size specified here
-      volume_type           = "gp3" # Example volume type, adjust as necessary
+      volume_size           = 20 
+      volume_type           = "gp3"
       delete_on_termination = true
     }
   }
@@ -233,6 +237,7 @@ resource "aws_security_group" "eks_cluster_sg" {
   vpc_id      = var.vpc_id
 
   lifecycle {
+    prevent_destroy = false
     create_before_destroy = true
   }
 

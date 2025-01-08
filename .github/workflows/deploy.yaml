@@ -50,6 +50,15 @@ jobs:
     - name: Update kubeconfig file with EKS
       run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION || 'us-east-1' }} --name ${{ secrets.CLUSTER_NAME }}
 
+    - name: Get ACM Certificate ARN
+      id: certificate_arn
+      run: |
+          DOMAIN="${{ secrets.DOMAIN_NAME }}"
+          CERTIFICATE_ARN=$(aws acm list-certificates --query "CertificateSummaryList[?DomainName=='$DOMAIN'].CertificateArn" --output text)
+      
+          echo "::add-mask::$CERTIFICATE_ARN"
+          echo "certificate_arn=$CERTIFICATE_ARN" >> $GITHUB_OUTPUT
+
     - name: Deploy helm chart
       run: |
         helm upgrade --install "${{ inputs.deployment_name }}" . \
@@ -65,5 +74,7 @@ jobs:
         --set ingress.enabled=true \
         --set ingress.annotations."alb\.ingress\.kubernetes\.io/load-balancer-name"="${{ inputs.deployment_name }}-lb" \
         --set ingress.tls[0].hosts[0]="${{ inputs.deployment_name }}.${{ secrets.DOMAIN_NAME }}" \
-        --set ingress.tls[0].secretName="sample-app-tls" \
-        --set ingress.annotations."external-dns\.alpha\.kubernetes\.io/hostname"="${{ inputs.deployment_name }}.${{ secrets.DOMAIN_NAME }}"
+        --set ingress.annotations."alb\.ingress\.kubernetes\.io/certificate-arn"="${{ steps.certificate_arn.outputs.certificate_arn }}" \
+        --set ingress.tls[0].secretName="${{ inputs.deployment_name }}-tls" \
+        --set ingress.annotations."external-dns\.alpha\.kubernetes\.io/hostname"="${{ inputs.deployment_name }}.${{ secrets.DOMAIN_NAME }}" \
+        --set probes.enabled=true
