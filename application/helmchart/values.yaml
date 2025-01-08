@@ -124,7 +124,7 @@ ingress:
     alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
     alb.ingress.kubernetes.io/healthy-threshold-count: '3'
     alb.ingress.kubernetes.io/unhealthy-threshold-count: '5'  
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:354918395475:certificate/6568c96b-5e51-4f39-b0d5-568b22307a57
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:354918395475:certificate/932e95c7-2295-414f-9d56-f763c2fc876a
     alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
     external-dns.alpha.kubernetes.io/hostname: dev.esmerlinmieses.com

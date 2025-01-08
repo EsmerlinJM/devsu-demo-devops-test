@@ -1,0 +1,42 @@
+name: Post Deployment task
+on:
+  workflow_call:
+      environment:
+        required: false
+        type: string
+        default: staging
+      deployment_name: 
+        required: false
+        type: string
+        default: ${{ github.event.repository.name }}
+
+jobs:
+  post-deploy:
+    name: Executes post-deployment tasks
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Set deployment info for EKS
+        id: deployment_info
+        run: |
+          echo "deployment_name=${{ inputs.deployment_name }}" >> $GITHUB_OUTPUT
+          echo "url=https://${{ inputs.deployment_name }}.${{ secrets.DOMAIN_NAME }}/ping" >> $GITHUB_OUTPUT
+
+      - name: Check service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: "${{ steps.deployment_info.outputs.url }}"
+          max-attempts: 6
+          retry-delay: 35s
+          retry-all: false
+
+      - name: Comment PR with new Dev URL
+        if: ${{ success() }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            **New ${{ inputs.environment }} URL for ${{ steps.deployment_info.outputs.deployment_name }}:**
+             🔗 Ingress URL: ${{ steps.deployment_info.outputs.url }}/ping
+
+             > The URL provided before for testing may not be available anymore.
+          reactions: rocket
