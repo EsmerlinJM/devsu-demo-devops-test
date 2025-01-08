@@ -58,7 +58,7 @@ jobs:
           -t ${{ secrets.CODECOV_TOKEN }} \
           -n 'service'-${{ github.run_id }} \
           -F service \
-          -f coverage/lcov.info
+          -f coverage/cobertura-coverage.xml
 
     - name: Shorten commit SHA
       id: shorten_sha
