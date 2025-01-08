@@ -58,7 +58,10 @@ jobs:
         args: >
           -Dsonar.projectKey=EsmerlinJM_devsu-demo-devops-test
           -Dsonar.organization=esmerlinjm
-          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+          -Dsonar.sources=.
+          -Dsonar.dynamicAnalysis=reuseReports
+          -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+          -Dsonar.language="javascript" 
       continue-on-error: true
 
     - name: Shorten commit SHA
