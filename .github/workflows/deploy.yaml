@@ -54,7 +54,10 @@ jobs:
       id: certificate_arn
       run: |
           DOMAIN="${{ secrets.DOMAIN_NAME }}"
-          echo "certificate_arn=$(aws acm list-certificates --query "CertificateSummaryList[?DomainName=='$DOMAIN'].CertificateArn" --output text)" >> $GITHUB_OUTPUT
+          CERTIFICATE_ARN=$(aws acm list-certificates --query "CertificateSummaryList[?DomainName=='$DOMAIN'].CertificateArn" --output text)
+      
+          echo "::add-mask::$CERTIFICATE_ARN"
+          echo "certificate_arn=$CERTIFICATE_ARN" >> $GITHUB_OUTPUT
 
     - name: Deploy helm chart
       run: |
