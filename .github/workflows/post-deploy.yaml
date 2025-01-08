@@ -31,7 +31,7 @@ jobs:
           retry-delay: 35s
           retry-all: false
 
-      - name: Comment PR with new Dev URL
+      - name: Comment PR with new URL
         if: ${{ success() && inputs.environment != 'production' }}
         uses: peter-evans/create-or-update-comment@v4
         with:

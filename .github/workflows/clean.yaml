@@ -26,6 +26,7 @@ jobs:
   remove-deploy:
     name: Removes app on EKS
     runs-on: ubuntu-24.04
+    environment: development
     defaults:
       run:
         working-directory: application/helmchart
