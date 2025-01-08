@@ -67,7 +67,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-          -Dsonar.projectKey=esmerlinjm_devsu-demo-devops-test
+          -Dsonar.projectKey=EsmerlinJM_devsu-demo-devops-test
           -Dsonar.organization=esmerlinjm
           -Dsonar.javascript.coverage.reportPaths=./coverage/cobertura-coverage.xml
           -Dsonar.language="javascript" 
