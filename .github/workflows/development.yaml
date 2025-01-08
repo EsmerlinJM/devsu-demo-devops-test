@@ -49,18 +49,19 @@ jobs:
         npm i jest
         npm run coverage
         
-    - name: SonarQube Scan
-      uses: SonarSource/sonarqube-scan-action@v4.2.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      with:
-        projectBaseDir: .
-        args: >
-          -Dsonar.projectKey=EsmerlinJM_devsu-demo-devops-test
-          -Dsonar.organization=esmerlinjm
-          -Dsonar.sources=./
-      continue-on-error: true
+    # - name: SonarQube Scan
+    #   uses: SonarSource/sonarqube-scan-action@v4.2.1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #   with:
+    #     projectBaseDir: .
+    #     args: >
+    #       -Dsonar.projectKey=EsmerlinJM_devsu-demo-devops-test
+    #       -Dsonar.organization=esmerlinjm
+    #       -Dsonar.sources=./
+    #       -Dsonar.tests=./
+    #   continue-on-error: true
 
     - name: Shorten commit SHA
       id: shorten_sha
@@ -72,6 +73,20 @@ jobs:
       id: image_info
       run: |
         echo "image_tag=devsu-test-nodejs-dev-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
+
+  coverage-scan:
+    name: SonarQubeScan2
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env: 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: application/
 
   # build-and-push:
   #   if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
