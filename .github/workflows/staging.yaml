@@ -77,6 +77,18 @@ jobs:
       service_type: NodePort
       namespace: devsu-test-nodejs-staging
     secrets: inherit
+
+  post-deploy:
+    if: github.event.pull_request.merged == true
+    needs:
+    - test
+    - build-and-push
+    - deploy
+    uses: ./.github/workflows/post-deploy.yaml
+    with:
+      environment: staging
+      deployment_name: devsu-test-nodejs-staging
+    secrets: inherit
     
 
     

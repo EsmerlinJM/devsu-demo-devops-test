@@ -61,6 +61,17 @@ jobs:
       service_type: NodePort
       namespace: devsu-test-nodejs-production
     secrets: inherit
+
+  post-deploy:
+    needs:
+    - test
+    - build-and-push
+    - deploy
+    uses: ./.github/workflows/post-deploy.yaml
+    with:
+      environment: production
+      deployment_name: devsu-test-nodejs-production
+    secrets: inherit
     
 
     

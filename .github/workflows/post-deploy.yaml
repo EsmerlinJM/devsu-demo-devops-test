@@ -15,6 +15,7 @@ jobs:
   post-deploy:
     name: Executes post-deployment tasks
     runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
     steps:
       - name: Set deployment info for EKS
         id: deployment_info
@@ -31,7 +32,7 @@ jobs:
           retry-all: false
 
       - name: Comment PR with new Dev URL
-        if: ${{ success() }}
+        if: ${{ success() && inputs.environment != 'production' }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
