@@ -81,7 +81,7 @@ jobs:
       image_tag: ${{ needs.test.outputs.image_tag }}
       deployment_name: devsu-test-nodejs-${{ needs.test.outputs.short_sha }}
       service_type: NodePort
-      namespace: development-${{ needs.test.outputs.short_sha }}
+      namespace: development
     secrets: inherit
 
   post-deploy:

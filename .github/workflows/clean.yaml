@@ -1,0 +1,89 @@
+name: Clean development enviroment
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+    - main
+    paths:
+      - application/**/*
+      - "**/*.js"
+      - "package.json"
+      - "package-lock.json"
+      - "Dockerfile"
+      - ".github/workflows/development.yaml"
+      - ".github/workflows/build.yaml"
+      - ".github/workflows/deploy.yaml"
+      - ".github/workflows/post-deploy.yaml"
+      - ".github/workflows/clean.yaml"
+    types: [closed]
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  remove-deploy:
+    name: Removes app on EKS
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: application/helmchart
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Shorten commit SHA
+      id: shorten_sha
+      run: |
+        SHORTEN_SHA=$(echo "${{ github.head_ref }}" | sha256sum | cut -c 1-5)
+        echo "short_sha=$SHORTEN_SHA" >> $GITHUB_OUTPUT
+
+    - name: Configure AWS Credentials
+      id: configure-aws-credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Setting image info
+      id: image_info
+      run: |
+        echo "image_tag=devsu-test-nodejs-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
+
+    - name: Delete ECR Image
+      run: |
+        REPOSITORY_NAME=${{ secrets.ECR_REPOSITORY || 'devsu-test-repository' }}
+        IMAGE_TAG=${{ steps.image_info.outputs.image_tag }}
+
+        IMAGE_DIGEST=$(aws ecr describe-images \
+          --repository-name $REPOSITORY_NAME \
+          --image-ids imageTag=$IMAGE_TAG \
+          --query 'imageDetails[0].imageDigest' \
+          --output text)
+
+        if [ "$IMAGE_DIGEST" = "None" ]; then
+          echo "Image not found on tag $IMAGE_TAG"
+          exit 1
+        fi
+
+        aws ecr batch-delete-image \
+          --repository-name $REPOSITORY_NAME \
+          --image-ids imageDigest=$IMAGE_DIGEST
+
+        echo "Image with tag $IMAGE_TAG deleted"
+
+
+    - name: Update kubeconfig file with EKS
+      run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION || 'us-east-1' }} --name ${{ secrets.CLUSTER_NAME }}
+
+    - name: Uninstall helm release
+      run: |
+        helm uninstall devsu-test-nodejs-${{ steps.shorten_sha.outputs.short_sha }} --namespace development --wait
+
+    - name: Delete branch
+      uses: SvanBoxel/delete-merged-branch@1.4.3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

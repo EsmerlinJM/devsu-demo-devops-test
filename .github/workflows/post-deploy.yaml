@@ -21,12 +21,12 @@ jobs:
         id: deployment_info
         run: |
           echo "deployment_name=${{ inputs.deployment_name }}" >> $GITHUB_OUTPUT
-          echo "url=https://${{ inputs.deployment_name }}.${{ secrets.DOMAIN_NAME }}/ping" >> $GITHUB_OUTPUT
+          echo "url=https://${{ inputs.deployment_name }}.${{ secrets.DOMAIN_NAME }}" >> $GITHUB_OUTPUT
 
       - name: Check service URL
         uses: jtalk/url-health-check-action@v4
         with:
-          url: "${{ steps.deployment_info.outputs.url }}"
+          url: "${{ steps.deployment_info.outputs.url }}/ping"
           max-attempts: 6
           retry-delay: 35s
           retry-all: false
