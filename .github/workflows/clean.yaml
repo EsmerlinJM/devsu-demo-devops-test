@@ -52,7 +52,7 @@ jobs:
     - name: Setting image info
       id: image_info
       run: |
-        echo "image_tag=devsu-test-nodejs-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
+        echo "image_tag=devsu-test-nodejs-dev-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
 
     - name: Delete ECR Image
       run: |
@@ -82,4 +82,4 @@ jobs:
 
     - name: Uninstall helm release
       run: |
-        helm uninstall devsu-test-nodejs-${{ steps.shorten_sha.outputs.short_sha }} --namespace development --wait
+        helm uninstall devsu-test-nodejs-dev-${{ steps.shorten_sha.outputs.short_sha }} --namespace development --wait

@@ -37,6 +37,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 
 
     - name: Clean install modules
       run: npm ci
@@ -46,50 +48,55 @@ jobs:
         npm i jest
         npm run coverage
 
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+
     - name: Setting image info
       id: image_info
       run: |
         echo "image_tag=latest" >> $GITHUB_OUTPUT
 
 
-  build-and-push:
-    if: github.event.pull_request.merged == true
-    needs:
-    - test
-    uses: ./.github/workflows/build.yaml
-    with:
-      working_directory: application/
-      environment: staging
-      image_tag: ${{ needs.test.outputs.image_tag }}
-    secrets: inherit
+  # build-and-push:
+  #   if: github.event.pull_request.merged == true
+  #   needs:
+  #   - test
+  #   uses: ./.github/workflows/build.yaml
+  #   with:
+  #     working_directory: application/
+  #     environment: staging
+  #     image_tag: ${{ needs.test.outputs.image_tag }}
+  #   secrets: inherit
     
 
-  deploy:
-    if: github.event.pull_request.merged == true
-    needs:
-    - test
-    - build-and-push
-    uses: ./.github/workflows/deploy.yaml
-    with:
-      working_directory: application/helmchart
-      environment: staging
-      image_tag: ${{ needs.test.outputs.image_tag }}
-      deployment_name: devsu-test-nodejs-staging
-      service_type: NodePort
-      namespace: devsu-test-nodejs-staging
-    secrets: inherit
+  # deploy:
+  #   if: github.event.pull_request.merged == true
+  #   needs:
+  #   - test
+  #   - build-and-push
+  #   uses: ./.github/workflows/deploy.yaml
+  #   with:
+  #     working_directory: application/helmchart
+  #     environment: staging
+  #     image_tag: ${{ needs.test.outputs.image_tag }}
+  #     deployment_name: devsu-test-nodejs-staging
+  #     service_type: NodePort
+  #     namespace: devsu-test-nodejs-staging
+  #   secrets: inherit
 
-  post-deploy:
-    if: github.event.pull_request.merged == true
-    needs:
-    - test
-    - build-and-push
-    - deploy
-    uses: ./.github/workflows/post-deploy.yaml
-    with:
-      environment: staging
-      deployment_name: devsu-test-nodejs-staging
-    secrets: inherit
+  # post-deploy:
+  #   if: github.event.pull_request.merged == true
+  #   needs:
+  #   - test
+  #   - build-and-push
+  #   - deploy
+  #   uses: ./.github/workflows/post-deploy.yaml
+  #   with:
+  #     environment: staging
+  #     deployment_name: devsu-test-nodejs-staging
+  #   secrets: inherit
     
 
     
