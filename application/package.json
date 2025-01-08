@@ -13,7 +13,9 @@
   "jest": {
     "transform": {
       "^.+\\.js?$": "babel-jest"
-    }
+    },
+    "collectCoverage": true,
+    "coverageReporters": ["text", "cobertura"]
   },
   "author": "Devsu",
   "dependencies": {
