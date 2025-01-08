@@ -55,6 +55,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
+        projectBaseDir: application/
         args: >
           -Dsonar.projectKey=EsmerlinJM_devsu-demo-devops-test
           -Dsonar.organization=esmerlinjm
