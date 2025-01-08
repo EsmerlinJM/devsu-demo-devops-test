@@ -41,6 +41,11 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Set up Node 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+
     - name: Clean install modules
       run: npm ci
     
@@ -53,7 +58,6 @@ jobs:
       uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        carryforward: true
 
     - name: Shorten commit SHA
       id: shorten_sha
