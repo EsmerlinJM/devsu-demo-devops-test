@@ -65,7 +65,7 @@ jobs:
           --output text)
 
         if [ "$IMAGE_DIGEST" = "None" ]; then
-          echo "No se encontró una imagen con el tag $IMAGE_TAG en el repositorio $REPOSITORY_NAME"
+          echo "Image not found on tag $IMAGE_TAG"
           exit 1
         fi
 
