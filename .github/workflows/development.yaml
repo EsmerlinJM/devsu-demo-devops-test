@@ -56,7 +56,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-          -Dsonar.projectKey=EsmerlinJM_devsu-demo-devops-test
+          -Dsonar.projectKey=esmerlinjm_devsu-demo-devops-test
           -Dsonar.organization=esmerlinjm
           -Dsonar.sources=./
       continue-on-error: true
