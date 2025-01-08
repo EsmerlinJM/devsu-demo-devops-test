@@ -53,6 +53,7 @@ jobs:
       uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+        carryforward: true
 
     - name: Shorten commit SHA
       id: shorten_sha
