@@ -1,7 +1,7 @@
 name: Deploy staging enviroment
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     branches:
     - main
     paths:
@@ -15,6 +15,7 @@ on:
       - ".github/workflows/build.yaml"
       - ".github/workflows/clean.yaml"
       - ".github/workflows/staging.yaml"
+    types: [closed]
 
 permissions:
   id-token: write
