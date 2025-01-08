@@ -49,9 +49,6 @@ jobs:
         npm i jest
         npm run coverage
 
-    - name: Override path in coverage report
-      run: sed -i "s|<source>/home/runner/work/devsu-demo-devops-test/devsu-demo-devops-test/application</source>|<source>/github/workspace/devsu-demo-devops-test/application</source>|g" devsu-demo-devops-test/application/coverage/clover.xml
-
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@v4.2.1
       env:
@@ -61,8 +58,7 @@ jobs:
         args: >
           -Dsonar.projectKey=EsmerlinJM_devsu-demo-devops-test
           -Dsonar.organization=esmerlinjm
-          -Dsonar.javascript.coverage.reportPaths=coverage/clover.xml
-          -Dsonar.language="javascript" 
+          -Dsonar.sources=./
       continue-on-error: true
 
     - name: Shorten commit SHA
@@ -76,43 +72,43 @@ jobs:
       run: |
         echo "image_tag=devsu-test-nodejs-dev-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
 
-  build-and-push:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
-    needs:
-    - test
-    uses: ./.github/workflows/build.yaml
-    with:
-      working_directory: application/
-      environment: development
-      image_tag: ${{ needs.test.outputs.image_tag }}
-    secrets: inherit
+  # build-and-push:
+  #   if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
+  #   needs:
+  #   - test
+  #   uses: ./.github/workflows/build.yaml
+  #   with:
+  #     working_directory: application/
+  #     environment: development
+  #     image_tag: ${{ needs.test.outputs.image_tag }}
+  #   secrets: inherit
     
-  deploy:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
-    needs:
-    - test
-    - build-and-push
-    uses: ./.github/workflows/deploy.yaml
-    with:
-      working_directory: application/helmchart
-      environment: development
-      image_tag: ${{ needs.test.outputs.image_tag }}
-      deployment_name: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
-      service_type: NodePort
-      namespace: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
-    secrets: inherit
+  # deploy:
+  #   if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
+  #   needs:
+  #   - test
+  #   - build-and-push
+  #   uses: ./.github/workflows/deploy.yaml
+  #   with:
+  #     working_directory: application/helmchart
+  #     environment: development
+  #     image_tag: ${{ needs.test.outputs.image_tag }}
+  #     deployment_name: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
+  #     service_type: NodePort
+  #     namespace: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
+  #   secrets: inherit
 
-  post-deploy:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
-    needs:
-    - test
-    - build-and-push
-    - deploy
-    uses: ./.github/workflows/post-deploy.yaml
-    with:
-      environment: development
-      deployment_name: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
-    secrets: inherit
+  # post-deploy:
+  #   if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
+  #   needs:
+  #   - test
+  #   - build-and-push
+  #   - deploy
+  #   uses: ./.github/workflows/post-deploy.yaml
+  #   with:
+  #     environment: development
+  #     deployment_name: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
+  #   secrets: inherit
     
 
     
