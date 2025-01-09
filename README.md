@@ -116,7 +116,7 @@ Generé un certificado SSL con AWS ACM via terraform para garantizar que las com
 [![Image](assets/images/certificate-ssl.png "certificate-ssl")](assets/images/certificate-ssl.png)
 
 staging:
-devsu-test-nodej-staging.esmerlinmieses.com
+devsu-test-nodejs-staging.esmerlinmieses.com
 
 Producción:
 devsu-test-nodejs-production.esmerlinmieses.com
