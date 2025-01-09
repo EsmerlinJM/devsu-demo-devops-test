@@ -121,16 +121,14 @@ Producción:
 devsu-test-nodejs-production.esmerlinmieses.com
 
 
-## Pruebas de funcionamiento
+## Pruebas
 
-### Creación de Usuario mediante método POST
-[![Image](https://devopstest-imagenes-fm.s3.amazonaws.com/testapp2.png "TestApp")](https://devopstest-imagenes-fm.s3.amazonaws.com/testapp2.png)
+### Crear usuario mediante método POST
+[![Image](assets/images/create-user.png "create-user")](assets/images/create-user.png)
 
-### Consultar el usuario creado mediante método GET
-[![Image](https://devopstest-imagenes-fm.s3.amazonaws.com/testapp3.png "TestApp2")](https://devopstest-imagenes-fm.s3.amazonaws.com/testapp3.png)
+### Consultar usuarios creados mediante método GET
+[![Image](assets/images/get-users.png "get-users")](assets/images/get-users.png)
 
-### Consulta Desde el Navegador
-[![Image](https://devopstest-imagenes-fm.s3.amazonaws.com/testapp.png "TestApp3")](https://devopstest-imagenes-fm.s3.amazonaws.com/testapp.png)
 
 ### Opciones para mejorar
 1. Para bajar los costos de la infraestructura, se podrían utilizar node groups mixtos con instancias spots, on demand y reserved o utilizar groups nodes fargate haciendo un cálculo con métricas donde el tráfico de la aplicación sea bajo.
