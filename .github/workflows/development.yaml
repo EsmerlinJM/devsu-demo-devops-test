@@ -5,16 +5,17 @@ on:
     branches:
     - main
     paths:
-      - application/**/*
       - "**/*.js"
-      - "package.json"
-      - "package-lock.json"
-      - "Dockerfile"
-      - ".github/workflows/development.yaml"
-      - ".github/workflows/build.yaml"
-      - ".github/workflows/deploy.yaml"
-      - ".github/workflows/post-deploy.yaml"
-      - ".github/workflows/clean.yaml"
+      - application/**/*.js
+      - application/**/package.json
+      - application/**/package.lock.json
+      - application/**/Dockerfile
+      - application/**/helmchart/*
+      - .github/workflows/development.yaml
+      - .github/workflows/build.yaml
+      - .github/workflows/deploy.yaml
+      - .github/workflows/post-deploy.yaml
+      - .github/workflows/clean.yaml
     types: [opened, synchronize, reopened, labeled]
 
 permissions:
