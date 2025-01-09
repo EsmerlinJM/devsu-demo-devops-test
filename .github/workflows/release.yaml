@@ -24,13 +24,23 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Set up Node 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+
     - name: Clean install modules
       run: npm ci
     
     - name: Unit Testing and Code Coverage
       run: |-
-        npm i jest
+        npm run test
         npm run coverage
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Setting image info
       id: image_info

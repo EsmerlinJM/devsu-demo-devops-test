@@ -5,16 +5,17 @@ on:
     branches:
     - main
     paths:
-      - application/**/*
-      - "**/*.js"
-      - "package.json"
-      - "package-lock.json"
-      - "Dockerfile"
-      - ".github/workflows/development.yaml"
-      - ".github/workflows/deploy.yaml"
-      - ".github/workflows/build.yaml"
-      - ".github/workflows/clean.yaml"
-      - ".github/workflows/staging.yaml"
+      - application/**/*.js
+      - application/**/package.json
+      - application/**/package.lock.json
+      - application/**/Dockerfile
+      - application/**/helmchart/*
+      - .github/workflows/development.yaml
+      - .github/workflows/deploy.yaml
+      - .github/workflows/build.yaml
+      - .github/workflows/clean.yaml
+      - .github/workflows/post-deploy.yaml
+      - .github/workflows/staging.yaml
     types: [closed]
 
 permissions:
@@ -38,14 +39,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0 
+        fetch-depth: 0
+      
+    - name: Set up Node 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
 
     - name: Clean install modules
       run: npm ci
     
     - name: Unit Testing and Code Coverage
       run: |-
-        npm i jest
+        npm run test
         npm run coverage
 
     - name: Upload coverage reports to Codecov
@@ -59,44 +65,44 @@ jobs:
         echo "image_tag=latest" >> $GITHUB_OUTPUT
 
 
-  # build-and-push:
-  #   if: github.event.pull_request.merged == true
-  #   needs:
-  #   - test
-  #   uses: ./.github/workflows/build.yaml
-  #   with:
-  #     working_directory: application/
-  #     environment: staging
-  #     image_tag: ${{ needs.test.outputs.image_tag }}
-  #   secrets: inherit
+  build-and-push:
+    if: github.event.pull_request.merged == true
+    needs:
+    - test
+    uses: ./.github/workflows/build.yaml
+    with:
+      working_directory: application/
+      environment: staging
+      image_tag: ${{ needs.test.outputs.image_tag }}
+    secrets: inherit
     
 
-  # deploy:
-  #   if: github.event.pull_request.merged == true
-  #   needs:
-  #   - test
-  #   - build-and-push
-  #   uses: ./.github/workflows/deploy.yaml
-  #   with:
-  #     working_directory: application/helmchart
-  #     environment: staging
-  #     image_tag: ${{ needs.test.outputs.image_tag }}
-  #     deployment_name: devsu-test-nodejs-staging
-  #     service_type: NodePort
-  #     namespace: devsu-test-nodejs-staging
-  #   secrets: inherit
+  deploy:
+    if: github.event.pull_request.merged == true
+    needs:
+    - test
+    - build-and-push
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      working_directory: application/helmchart
+      environment: staging
+      image_tag: ${{ needs.test.outputs.image_tag }}
+      deployment_name: devsu-test-nodejs-staging
+      service_type: NodePort
+      namespace: devsu-test-nodejs-staging
+    secrets: inherit
 
-  # post-deploy:
-  #   if: github.event.pull_request.merged == true
-  #   needs:
-  #   - test
-  #   - build-and-push
-  #   - deploy
-  #   uses: ./.github/workflows/post-deploy.yaml
-  #   with:
-  #     environment: staging
-  #     deployment_name: devsu-test-nodejs-staging
-  #   secrets: inherit
+  post-deploy:
+    if: github.event.pull_request.merged == true
+    needs:
+    - test
+    - build-and-push
+    - deploy
+    uses: ./.github/workflows/post-deploy.yaml
+    with:
+      environment: staging
+      deployment_name: devsu-test-nodejs-staging
+    secrets: inherit
     
 
     

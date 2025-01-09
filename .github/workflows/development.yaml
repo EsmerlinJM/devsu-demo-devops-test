@@ -5,16 +5,17 @@ on:
     branches:
     - main
     paths:
-      - application/**/*
-      - "**/*.js"
-      - "package.json"
-      - "package-lock.json"
-      - "Dockerfile"
-      - ".github/workflows/development.yaml"
-      - ".github/workflows/build.yaml"
-      - ".github/workflows/deploy.yaml"
-      - ".github/workflows/post-deploy.yaml"
-      - ".github/workflows/clean.yaml"
+      - application/**/*.js
+      - application/**/package.json
+      - application/**/package.lock.json
+      - application/**/Dockerfile
+      - application/**/helmchart/*
+      - application/**/codecov.yml
+      - .github/workflows/development.yaml
+      - .github/workflows/build.yaml
+      - .github/workflows/deploy.yaml
+      - .github/workflows/post-deploy.yaml
+      - .github/workflows/clean.yaml
     types: [opened, synchronize, reopened, labeled]
 
 permissions:
@@ -41,12 +42,17 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Set up Node 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+
     - name: Clean install modules
       run: npm ci
     
     - name: Unit Testing and Code Coverage
       run: |-
-        npm i jest
+        npm run test
         npm run coverage
         
     - name: Upload coverage reports to Codecov
@@ -65,43 +71,43 @@ jobs:
       run: |
         echo "image_tag=devsu-test-nodejs-dev-${{ steps.shorten_sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
 
-  # build-and-push:
-  #   if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
-  #   needs:
-  #   - test
-  #   uses: ./.github/workflows/build.yaml
-  #   with:
-  #     working_directory: application/
-  #     environment: development
-  #     image_tag: ${{ needs.test.outputs.image_tag }}
-  #   secrets: inherit
+  build-and-push:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
+    needs:
+    - test
+    uses: ./.github/workflows/build.yaml
+    with:
+      working_directory: application/
+      environment: development
+      image_tag: ${{ needs.test.outputs.image_tag }}
+    secrets: inherit
     
-  # deploy:
-  #   if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
-  #   needs:
-  #   - test
-  #   - build-and-push
-  #   uses: ./.github/workflows/deploy.yaml
-  #   with:
-  #     working_directory: application/helmchart
-  #     environment: development
-  #     image_tag: ${{ needs.test.outputs.image_tag }}
-  #     deployment_name: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
-  #     service_type: NodePort
-  #     namespace: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
-  #   secrets: inherit
+  deploy:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
+    needs:
+    - test
+    - build-and-push
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      working_directory: application/helmchart
+      environment: development
+      image_tag: ${{ needs.test.outputs.image_tag }}
+      deployment_name: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
+      service_type: NodePort
+      namespace: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
+    secrets: inherit
 
-  # post-deploy:
-  #   if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
-  #   needs:
-  #   - test
-  #   - build-and-push
-  #   - deploy
-  #   uses: ./.github/workflows/post-deploy.yaml
-  #   with:
-  #     environment: development
-  #     deployment_name: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
-  #   secrets: inherit
+  post-deploy:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-action') }}
+    needs:
+    - test
+    - build-and-push
+    - deploy
+    uses: ./.github/workflows/post-deploy.yaml
+    with:
+      environment: development
+      deployment_name: devsu-test-nodejs-dev-${{ needs.test.outputs.short_sha }}
+    secrets: inherit
     
 
     
