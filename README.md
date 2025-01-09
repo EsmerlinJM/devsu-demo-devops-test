@@ -37,8 +37,8 @@ El proyecto Terraform está estructurado usando módulos, los cuales detallo a c
     ```bash
     export KUBE_CONFIG_PATH=~/.kube/config 
     terraform init
-    terraform plan -var-file=dev.tfvars”
-    terraform apply -var-file=dev.tfvars”
+    terraform plan -var-file="dev.tfvars”
+    terraform apply -var-file="dev.tfvars”
 
 3. **Desplegar infraestructura applicacion con helm**:
     ```bash
@@ -112,6 +112,7 @@ Generé un certificado SSL con AWS ACM via terraform para garantizar que las com
 
 
 ### SSL
+[![Image](assets/images/acm-ssl.png "acm-ssl")](assets/images/acm-ssl.png)
 [![Image](assets/images/certificate-ssl.png "certificate-ssl")](assets/images/certificate-ssl.png)
 
 staging:

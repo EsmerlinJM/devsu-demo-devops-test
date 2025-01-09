@@ -5,7 +5,7 @@ Este módulo crea un certificado SSL utilizando Amazon ACM (AWS Certificate Mana
 ## Prerrequisitos
 
 - Terraform v1.10.3
-- Proveedor AWS versión 5.82.2
+- AWS provider versión 5.82.2
 
 ## Variables
 
@@ -19,24 +19,6 @@ Este módulo crea un certificado SSL utilizando Amazon ACM (AWS Certificate Mana
 | Nombre                 | Descripción                                        |
 | ---------------------- | -------------------------------------------------- |
 | `cert_acm`             | ARN del certificado ACM creado                    |
-
-## Recursos
-
-### Zona de Route 53 (`aws_route53_zone`)
-
-Este recurso selecciona la zona pública de Route 53 para el dominio especificado.
-
-### Certificado ACM (`aws_acm_certificate`)
-
-Este recurso crea un certificado ACM para el dominio especificado y configura la validación mediante DNS. Además, se configura un nombre alternativo para el sujeto (`subject_alternative_names`) para incluir todos los subdominios del dominio principal.
-
-### Registro de Validación en Route 53 (`aws_route53_record`)
-
-Este recurso crea registros DNS en la zona de Route 53 para validar el certificado ACM mediante el método de validación DNS. Se genera un registro CNAME para cada opción de validación de dominio proporcionada por el certificado ACM.
-
-### Validación del Certificado ACM (`aws_acm_certificate_validation`)
-
-Este recurso valida el certificado ACM utilizando los registros DNS creados en Route 53. El certificado se considera válido cuando los registros DNS se propagan correctamente.
 
 ## Ejemplo de Uso
 

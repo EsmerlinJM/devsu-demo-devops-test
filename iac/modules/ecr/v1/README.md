@@ -23,20 +23,6 @@ Este módulo crea un repositorio Amazon ECR (Elastic Container Registry) con una
 | `repository_name`             | El nombre del repositorio                                         |
 | `public_repository_url`       | La URL del repositorio                                           |
 
-## Recursos
-
-### Repositorio ECR (`aws_ecr_repository`)
-
-Este recurso crea un repositorio de ECR con las siguientes configuraciones:
-- **image_tag_mutability:** Se establece en `"MUTABLE"`, lo que permite cambiar las etiquetas de las imágenes.
-- **image_scanning_configuration:** Habilita el escaneo de imágenes al hacer push según el valor de la variable `ecr_scan_on_push`.
-
-### Política de Ciclo de Vida de ECR (`aws_ecr_lifecycle_policy`)
-
-Este recurso define una política de ciclo de vida para eliminar imágenes antiguas:
-- **Regla:** Retener solo las últimas 10 imágenes.
-- **Condición:** Se elimina cualquier imagen cuando el número de imágenes en el repositorio excede las 10.
-
 ## Ejemplo de Uso
 
 ```hcl
