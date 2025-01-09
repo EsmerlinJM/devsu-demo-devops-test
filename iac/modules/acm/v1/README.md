@@ -20,7 +20,7 @@ Este módulo crea un certificado SSL utilizando Amazon ACM (AWS Certificate Mana
 | ---------------------- | -------------------------------------------------- |
 | `cert_acm`             | ARN del certificado ACM creado                    |
 
-## Ejemplo de Uso
+## Uso
 
 ```hcl
 module "acm_route53" {

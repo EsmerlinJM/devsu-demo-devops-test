@@ -37,7 +37,7 @@ Este módulo crea un clúster de Amazon EKS (Elastic Kubernetes Service) con gru
 | `oidc_provider_id`                 | El ID OIDC del clúster                                       |
 
 
-## Uso
+## Ejemplo de Uso
 
 Ejemplo para crear un clúster de EKS con un grupo de nodos administrado:
 

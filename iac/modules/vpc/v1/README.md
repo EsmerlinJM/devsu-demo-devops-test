@@ -36,7 +36,7 @@ Este módulo de Terraform crea una Virtual Private Cloud (VPC) personalizada dis
 | `aws_route_table_private`        | El ID de la tabla de rutas privadas.              |
 | `nat_gateway_ipv4_address`       | La dirección IPv4 de la NAT Gateway.              |
 
-## Uso Ejemplo
+## Ejemplo de Uso
 
 ```hcl
 module "custom_vpc" {
