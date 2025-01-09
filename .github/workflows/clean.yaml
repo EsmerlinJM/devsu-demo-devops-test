@@ -83,4 +83,4 @@ jobs:
 
     - name: Uninstall helm release
       run: |
-        helm uninstall devsu-test-nodejs-dev-${{ steps.shorten_sha.outputs.short_sha }} --namespace development --wait
+        helm uninstall devsu-test-nodejs-dev-${{ steps.shorten_sha.outputs.short_sha }} --namespace devsu-test-nodejs-dev-${{ steps.shorten_sha.outputs.short_sha }} --wait
