@@ -1,0 +1,2007 @@
+Acquiring state lock. This may take a few moments...
+module.eks.data.aws_eks_cluster_auth.main: Reading...
+module.eks.data.aws_iam_policy_document.assume_role_policy: Reading...
+module.eks.data.aws_iam_policy_document.eks_assume_role_policy: Reading...
+module.vpc.data.aws_availability_zones.available: Reading...
+module.acm.data.aws_route53_zone.selected_zone: Reading...
+module.eks.data.aws_iam_policy_document.eks_admin_policy_doc: Reading...
+module.eks.data.aws_eks_cluster_auth.main: Read complete after 0s [id=devsu-test-cluster]
+module.eks.data.aws_iam_policy_document.eks_admin_policy_doc: Read complete after 0s [id=164658316]
+module.eks.data.aws_iam_policy_document.assume_role_policy: Read complete after 0s [id=2851119427]
+module.eks.data.aws_iam_policy_document.eks_assume_role_policy: Read complete after 0s [id=3552664922]
+module.eks.data.aws_caller_identity.current: Reading...
+module.eks.data.aws_caller_identity.dev: Reading...
+module.eks.data.aws_partition.current: Reading...
+module.eks.data.aws_partition.current: Read complete after 0s [id=aws]
+module.eks.data.aws_caller_identity.current: Read complete after 0s [id=354918395475]
+module.eks.data.aws_iam_policy_document.eks_admins_assume_role_policy_doc: Reading...
+module.eks.data.aws_iam_policy_document.kms_key_policy: Reading...
+module.eks.data.aws_iam_policy_document.eks_admins_assume_role_policy_doc: Read complete after 0s [id=1449149142]
+module.eks.data.aws_iam_policy_document.kms_key_policy: Read complete after 0s [id=1081758281]
+module.eks.data.aws_caller_identity.dev: Read complete after 0s [id=354918395475]
+module.vpc.data.aws_availability_zones.available: Read complete after 1s [id=us-east-1]
+module.eks.data.aws_eks_cluster_auth.aws_iam_authenticator: Reading...
+module.eks.data.aws_eks_cluster_auth.aws_iam_authenticator: Read complete after 0s [id=devsu-test-cluster]
+module.acm.data.aws_route53_zone.selected_zone: Read complete after 1s [id=Z0570027ZZF2EIWHW6NI]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # module.acm.aws_acm_certificate.cert_acm will be created
+  + resource "aws_acm_certificate" "cert_acm" {
+      + arn                       = (known after apply)
+      + domain_name               = "esmerlinmieses.com"
+      + domain_validation_options = [
+          + {
+              + domain_name           = "*.esmerlinmieses.com"
+              + resource_record_name  = (known after apply)
+              + resource_record_type  = (known after apply)
+              + resource_record_value = (known after apply)
+            },
+          + {
+              + domain_name           = "esmerlinmieses.com"
+              + resource_record_name  = (known after apply)
+              + resource_record_type  = (known after apply)
+              + resource_record_value = (known after apply)
+            },
+        ]
+      + id                        = (known after apply)
+      + key_algorithm             = (known after apply)
+      + not_after                 = (known after apply)
+      + not_before                = (known after apply)
+      + pending_renewal           = (known after apply)
+      + renewal_eligibility       = (known after apply)
+      + renewal_summary           = (known after apply)
+      + status                    = (known after apply)
+      + subject_alternative_names = [
+          + "*.esmerlinmieses.com",
+          + "esmerlinmieses.com",
+        ]
+      + tags                      = {
+          + "Environment" = "dev"
+        }
+      + tags_all                  = {
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+        }
+      + type                      = (known after apply)
+      + validation_emails         = (known after apply)
+      + validation_method         = "DNS"
+
+      + options (known after apply)
+    }
+
+  # module.acm.aws_acm_certificate_validation.cert_validation will be created
+  + resource "aws_acm_certificate_validation" "cert_validation" {
+      + certificate_arn         = (known after apply)
+      + id                      = (known after apply)
+      + validation_record_fqdns = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.acm.aws_route53_record.cert_validation_record["*.esmerlinmieses.com"] will be created
+  + resource "aws_route53_record" "cert_validation_record" {
+      + allow_overwrite = true
+      + fqdn            = (known after apply)
+      + id              = (known after apply)
+      + name            = (known after apply)
+      + records         = (known after apply)
+      + ttl             = 60
+      + type            = (known after apply)
+      + zone_id         = "Z0570027ZZF2EIWHW6NI"
+    }
+
+  # module.acm.aws_route53_record.cert_validation_record["esmerlinmieses.com"] will be created
+  + resource "aws_route53_record" "cert_validation_record" {
+      + allow_overwrite = true
+      + fqdn            = (known after apply)
+      + id              = (known after apply)
+      + name            = (known after apply)
+      + records         = (known after apply)
+      + ttl             = 60
+      + type            = (known after apply)
+      + zone_id         = "Z0570027ZZF2EIWHW6NI"
+    }
+
+  # module.ecr.aws_ecr_lifecycle_policy.ecr_lf_policy will be created
+  + resource "aws_ecr_lifecycle_policy" "ecr_lf_policy" {
+      + id          = (known after apply)
+      + policy      = jsonencode(
+            {
+              + rules = [
+                  + {
+                      + action       = {
+                          + type = "expire"
+                        }
+                      + description  = "Retain only the last 10 images"
+                      + rulePriority = 1
+                      + selection    = {
+                          + countNumber = 10
+                          + countType   = "imageCountMoreThan"
+                          + tagStatus   = "any"
+                        }
+                    },
+                ]
+            }
+        )
+      + registry_id = (known after apply)
+      + repository  = "devsu-test-repository"
+    }
+
+  # module.ecr.aws_ecr_repository.ecr_repo will be created
+  + resource "aws_ecr_repository" "ecr_repo" {
+      + arn                  = (known after apply)
+      + id                   = (known after apply)
+      + image_tag_mutability = "MUTABLE"
+      + name                 = "devsu-test-repository"
+      + registry_id          = (known after apply)
+      + repository_url       = (known after apply)
+      + tags_all             = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+
+      + image_scanning_configuration {
+          + scan_on_push = true
+        }
+    }
+
+  # module.eks.data.aws_eks_addon_version.main["aws-ebs-csi-driver"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_eks_addon_version" "main" {
+      + addon_name         = "aws-ebs-csi-driver"
+      + id                 = (known after apply)
+      + kubernetes_version = (known after apply)
+      + version            = (known after apply)
+    }
+
+  # module.eks.data.aws_eks_addon_version.main["coredns"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_eks_addon_version" "main" {
+      + addon_name         = "coredns"
+      + id                 = (known after apply)
+      + kubernetes_version = (known after apply)
+      + version            = (known after apply)
+    }
+
+  # module.eks.data.aws_eks_addon_version.main["kube-proxy"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_eks_addon_version" "main" {
+      + addon_name         = "kube-proxy"
+      + id                 = (known after apply)
+      + kubernetes_version = (known after apply)
+      + version            = (known after apply)
+    }
+
+  # module.eks.data.aws_eks_addon_version.main["metrics-server"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_eks_addon_version" "main" {
+      + addon_name         = "metrics-server"
+      + id                 = (known after apply)
+      + kubernetes_version = (known after apply)
+      + version            = (known after apply)
+    }
+
+  # module.eks.data.aws_eks_addon_version.main["vpc-cni"] will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_eks_addon_version" "main" {
+      + addon_name         = "vpc-cni"
+      + id                 = (known after apply)
+      + kubernetes_version = (known after apply)
+      + version            = (known after apply)
+    }
+
+  # module.eks.data.aws_eks_cluster.main will be read during apply
+  # (depends on a resource or a module with changes pending)
+ <= data "aws_eks_cluster" "main" {
+      + access_config             = (known after apply)
+      + arn                       = (known after apply)
+      + certificate_authority     = (known after apply)
+      + cluster_id                = (known after apply)
+      + compute_config            = (known after apply)
+      + created_at                = (known after apply)
+      + enabled_cluster_log_types = (known after apply)
+      + endpoint                  = (known after apply)
+      + id                        = (known after apply)
+      + identity                  = (known after apply)
+      + kubernetes_network_config = (known after apply)
+      + name                      = "devsu-test-cluster"
+      + outpost_config            = (known after apply)
+      + platform_version          = (known after apply)
+      + remote_network_config     = (known after apply)
+      + role_arn                  = (known after apply)
+      + status                    = (known after apply)
+      + storage_config            = (known after apply)
+      + tags                      = (known after apply)
+      + upgrade_policy            = (known after apply)
+      + version                   = (known after apply)
+      + vpc_config                = (known after apply)
+      + zonal_shift_config        = (known after apply)
+    }
+
+  # module.eks.data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy" {
+      + id            = (known after apply)
+      + json          = (known after apply)
+      + minified_json = (known after apply)
+
+      + statement {
+          + actions = [
+              + "sts:AssumeRoleWithWebIdentity",
+            ]
+          + effect  = "Allow"
+
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "system:serviceaccount:kube-system:aws-load-balancer-controller",
+                ]
+              + variable = (known after apply)
+            }
+
+          + principals {
+              + identifiers = [
+                  + (known after apply),
+                ]
+              + type        = "Federated"
+            }
+        }
+    }
+
+  # module.eks.data.aws_iam_policy_document.cluster_encryption will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "cluster_encryption" {
+      + id            = (known after apply)
+      + json          = (known after apply)
+      + minified_json = (known after apply)
+
+      + statement {
+          + actions   = [
+              + "kms:Decrypt",
+              + "kms:DescribeKey",
+              + "kms:Encrypt",
+              + "kms:ListGrants",
+            ]
+          + resources = [
+              + (known after apply),
+            ]
+        }
+    }
+
+  # module.eks.data.aws_iam_policy_document.vpc_cni_assume_role_policy will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "vpc_cni_assume_role_policy" {
+      + id            = (known after apply)
+      + json          = (known after apply)
+      + minified_json = (known after apply)
+
+      + statement {
+          + actions = [
+              + "sts:AssumeRoleWithWebIdentity",
+            ]
+          + effect  = "Allow"
+
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "system:serviceaccount:kube-system:aws-node",
+                ]
+              + variable = (known after apply)
+            }
+
+          + principals {
+              + identifiers = [
+                  + (known after apply),
+                ]
+              + type        = "Federated"
+            }
+        }
+    }
+
+  # module.eks.aws_eks_addon.main["aws-ebs-csi-driver"] will be created
+  + resource "aws_eks_addon" "main" {
+      + addon_name                  = "aws-ebs-csi-driver"
+      + addon_version               = (known after apply)
+      + arn                         = (known after apply)
+      + cluster_name                = "devsu-test-cluster"
+      + configuration_values        = (known after apply)
+      + created_at                  = (known after apply)
+      + id                          = (known after apply)
+      + modified_at                 = (known after apply)
+      + resolve_conflicts_on_create = "OVERWRITE"
+      + resolve_conflicts_on_update = "OVERWRITE"
+      + tags_all                    = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+    }
+
+  # module.eks.aws_eks_addon.main["coredns"] will be created
+  + resource "aws_eks_addon" "main" {
+      + addon_name                  = "coredns"
+      + addon_version               = (known after apply)
+      + arn                         = (known after apply)
+      + cluster_name                = "devsu-test-cluster"
+      + configuration_values        = (known after apply)
+      + created_at                  = (known after apply)
+      + id                          = (known after apply)
+      + modified_at                 = (known after apply)
+      + resolve_conflicts_on_create = "OVERWRITE"
+      + resolve_conflicts_on_update = "OVERWRITE"
+      + tags_all                    = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+    }
+
+  # module.eks.aws_eks_addon.main["kube-proxy"] will be created
+  + resource "aws_eks_addon" "main" {
+      + addon_name                  = "kube-proxy"
+      + addon_version               = (known after apply)
+      + arn                         = (known after apply)
+      + cluster_name                = "devsu-test-cluster"
+      + configuration_values        = (known after apply)
+      + created_at                  = (known after apply)
+      + id                          = (known after apply)
+      + modified_at                 = (known after apply)
+      + resolve_conflicts_on_create = "OVERWRITE"
+      + resolve_conflicts_on_update = "OVERWRITE"
+      + tags_all                    = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+    }
+
+  # module.eks.aws_eks_addon.main["metrics-server"] will be created
+  + resource "aws_eks_addon" "main" {
+      + addon_name                  = "metrics-server"
+      + addon_version               = (known after apply)
+      + arn                         = (known after apply)
+      + cluster_name                = "devsu-test-cluster"
+      + configuration_values        = (known after apply)
+      + created_at                  = (known after apply)
+      + id                          = (known after apply)
+      + modified_at                 = (known after apply)
+      + resolve_conflicts_on_create = "OVERWRITE"
+      + resolve_conflicts_on_update = "OVERWRITE"
+      + tags_all                    = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+    }
+
+  # module.eks.aws_eks_addon.main["vpc-cni"] will be created
+  + resource "aws_eks_addon" "main" {
+      + addon_name                  = "vpc-cni"
+      + addon_version               = (known after apply)
+      + arn                         = (known after apply)
+      + cluster_name                = "devsu-test-cluster"
+      + configuration_values        = (known after apply)
+      + created_at                  = (known after apply)
+      + id                          = (known after apply)
+      + modified_at                 = (known after apply)
+      + resolve_conflicts_on_create = "OVERWRITE"
+      + resolve_conflicts_on_update = "OVERWRITE"
+      + tags_all                    = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+    }
+
+  # module.eks.aws_eks_cluster.main will be created
+  + resource "aws_eks_cluster" "main" {
+      + arn                           = (known after apply)
+      + bootstrap_self_managed_addons = true
+      + certificate_authority         = (known after apply)
+      + cluster_id                    = (known after apply)
+      + created_at                    = (known after apply)
+      + enabled_cluster_log_types     = [
+          + "api",
+          + "audit",
+          + "authenticator",
+        ]
+      + endpoint                      = (known after apply)
+      + id                            = (known after apply)
+      + identity                      = (known after apply)
+      + name                          = "devsu-test-cluster"
+      + platform_version              = (known after apply)
+      + role_arn                      = (known after apply)
+      + status                        = (known after apply)
+      + tags_all                      = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + version                       = (known after apply)
+
+      + access_config {
+          + authentication_mode                         = "API_AND_CONFIG_MAP"
+          + bootstrap_cluster_creator_admin_permissions = true
+        }
+
+      + encryption_config {
+          + resources = [
+              + "secrets",
+            ]
+
+          + provider {
+              + key_arn = (known after apply)
+            }
+        }
+
+      + kubernetes_network_config (known after apply)
+
+      + upgrade_policy (known after apply)
+
+      + vpc_config {
+          + cluster_security_group_id = (known after apply)
+          + endpoint_private_access   = false
+          + endpoint_public_access    = true
+          + public_access_cidrs       = (known after apply)
+          + security_group_ids        = (known after apply)
+          + subnet_ids                = (known after apply)
+          + vpc_id                    = (known after apply)
+        }
+    }
+
+  # module.eks.aws_eks_node_group.main["demo_group"] will be created
+  + resource "aws_eks_node_group" "main" {
+      + ami_type               = "AL2_x86_64"
+      + arn                    = (known after apply)
+      + capacity_type          = "ON_DEMAND"
+      + cluster_name           = "devsu-test-cluster"
+      + disk_size              = (known after apply)
+      + force_update_version   = true
+      + id                     = (known after apply)
+      + instance_types         = [
+          + "t3.small",
+        ]
+      + node_group_name        = "devsu-ng"
+      + node_group_name_prefix = (known after apply)
+      + node_role_arn          = (known after apply)
+      + release_version        = (known after apply)
+      + resources              = (known after apply)
+      + status                 = (known after apply)
+      + subnet_ids             = (known after apply)
+      + tags_all               = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + version                = (known after apply)
+
+      + launch_template {
+          + id      = (known after apply)
+          + name    = (known after apply)
+          + version = "$Latest"
+        }
+
+      + scaling_config {
+          + desired_size = 2
+          + max_size     = 3
+          + min_size     = 1
+        }
+
+      + update_config (known after apply)
+    }
+
+  # module.eks.aws_iam_instance_profile.eks_node will be created
+  + resource "aws_iam_instance_profile" "eks_node" {
+      + arn         = (known after apply)
+      + create_date = (known after apply)
+      + id          = (known after apply)
+      + name        = "devsu-test-cluster-node-role"
+      + name_prefix = (known after apply)
+      + path        = "/"
+      + role        = "devsu-test-cluster-node-role"
+      + tags_all    = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + unique_id   = (known after apply)
+    }
+
+  # module.eks.aws_iam_openid_connect_provider.oidc_provider will be created
+  + resource "aws_iam_openid_connect_provider" "oidc_provider" {
+      + arn             = (known after apply)
+      + client_id_list  = [
+          + "sts.amazonaws.com",
+        ]
+      + id              = (known after apply)
+      + tags_all        = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + thumbprint_list = [
+          + "9e99a48a9960b14926bb7f3b02e22da2b0ab7280",
+        ]
+      + url             = (known after apply)
+    }
+
+  # module.eks.aws_iam_policy.aws_load_balancer_controller will be created
+  + resource "aws_iam_policy" "aws_load_balancer_controller" {
+      + arn              = (known after apply)
+      + attachment_count = (known after apply)
+      + id               = (known after apply)
+      + name             = "AWSLoadBalancerController"
+      + name_prefix      = (known after apply)
+      + path             = "/"
+      + policy           = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = [
+                          + "iam:CreateServiceLinkedRole",
+                        ]
+                      + Condition = {
+                          + StringEquals = {
+                              + "iam:AWSServiceName" = "elasticloadbalancing.amazonaws.com"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "*"
+                    },
+                  + {
+                      + Action   = [
+                          + "ec2:DescribeAccountAttributes",
+                          + "ec2:DescribeAddresses",
+                          + "ec2:DescribeAvailabilityZones",
+                          + "ec2:DescribeInternetGateways",
+                          + "ec2:DescribeVpcs",
+                          + "ec2:DescribeVpcPeeringConnections",
+                          + "ec2:DescribeSubnets",
+                          + "ec2:DescribeSecurityGroups",
+                          + "ec2:DescribeInstances",
+                          + "ec2:DescribeNetworkInterfaces",
+                          + "ec2:DescribeTags",
+                          + "ec2:GetCoipPoolUsage",
+                          + "ec2:DescribeCoipPools",
+                          + "elasticloadbalancing:DescribeListenerAttributes",
+                          + "elasticloadbalancing:ModifyListenerAttributes",
+                          + "elasticloadbalancing:DescribeLoadBalancers",
+                          + "elasticloadbalancing:DescribeLoadBalancerAttributes",
+                          + "elasticloadbalancing:DescribeListeners",
+                          + "elasticloadbalancing:DescribeListenerCertificates",
+                          + "elasticloadbalancing:DescribeSSLPolicies",
+                          + "elasticloadbalancing:DescribeRules",
+                          + "elasticloadbalancing:DescribeTargetGroups",
+                          + "elasticloadbalancing:DescribeTargetGroupAttributes",
+                          + "elasticloadbalancing:DescribeTargetHealth",
+                          + "elasticloadbalancing:DescribeTags",
+                          + "elasticloadbalancing:RegisterTargets",
+                          + "elasticloadbalancing:DeregisterTargets",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                  + {
+                      + Action   = [
+                          + "cognito-idp:DescribeUserPoolClient",
+                          + "acm:ListCertificates",
+                          + "acm:DescribeCertificate",
+                          + "iam:ListServerCertificates",
+                          + "iam:GetServerCertificate",
+                          + "waf-regional:GetWebACL",
+                          + "waf-regional:GetWebACLForResource",
+                          + "waf-regional:AssociateWebACL",
+                          + "waf-regional:DisassociateWebACL",
+                          + "wafv2:GetWebACL",
+                          + "wafv2:GetWebACLForResource",
+                          + "wafv2:AssociateWebACL",
+                          + "wafv2:DisassociateWebACL",
+                          + "shield:GetSubscriptionState",
+                          + "shield:DescribeProtection",
+                          + "shield:CreateProtection",
+                          + "shield:DeleteProtection",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                  + {
+                      + Action   = [
+                          + "ec2:AuthorizeSecurityGroupIngress",
+                          + "ec2:RevokeSecurityGroupIngress",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                  + {
+                      + Action   = [
+                          + "ec2:CreateSecurityGroup",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                  + {
+                      + Action    = [
+                          + "ec2:CreateTags",
+                        ]
+                      + Condition = {
+                          + Null         = {
+                              + "aws:RequestTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                          + StringEquals = {
+                              + "ec2:CreateAction" = "CreateSecurityGroup"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "arn:aws:ec2:*:*:security-group/*"
+                    },
+                  + {
+                      + Action    = [
+                          + "ec2:CreateTags",
+                          + "ec2:DeleteTags",
+                        ]
+                      + Condition = {
+                          + Null = {
+                              + "aws:RequestTag/elbv2.k8s.aws/cluster"  = "true"
+                              + "aws:ResourceTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "arn:aws:ec2:*:*:security-group/*"
+                    },
+                  + {
+                      + Action    = [
+                          + "ec2:AuthorizeSecurityGroupIngress",
+                          + "ec2:RevokeSecurityGroupIngress",
+                          + "ec2:DeleteSecurityGroup",
+                        ]
+                      + Condition = {
+                          + Null = {
+                              + "aws:ResourceTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "*"
+                    },
+                  + {
+                      + Action    = [
+                          + "elasticloadbalancing:CreateLoadBalancer",
+                          + "elasticloadbalancing:CreateTargetGroup",
+                        ]
+                      + Condition = {
+                          + Null = {
+                              + "aws:RequestTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "*"
+                    },
+                  + {
+                      + Action   = [
+                          + "elasticloadbalancing:CreateListener",
+                          + "elasticloadbalancing:DeleteListener",
+                          + "elasticloadbalancing:CreateRule",
+                          + "elasticloadbalancing:DeleteRule",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                  + {
+                      + Action    = [
+                          + "elasticloadbalancing:AddTags",
+                          + "elasticloadbalancing:RemoveTags",
+                        ]
+                      + Condition = {
+                          + Null = {
+                              + "aws:RequestTag/elbv2.k8s.aws/cluster"  = "true"
+                              + "aws:ResourceTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = [
+                          + "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*",
+                        ]
+                    },
+                  + {
+                      + Action   = [
+                          + "elasticloadbalancing:AddTags",
+                          + "elasticloadbalancing:RemoveTags",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = [
+                          + "arn:aws:elasticloadbalancing:*:*:listener/net/*/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:listener/app/*/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:listener-rule/net/*/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:listener-rule/app/*/*/*",
+                        ]
+                    },
+                  + {
+                      + Action    = [
+                          + "elasticloadbalancing:ModifyLoadBalancerAttributes",
+                          + "elasticloadbalancing:SetIpAddressType",
+                          + "elasticloadbalancing:SetSecurityGroups",
+                          + "elasticloadbalancing:SetSubnets",
+                          + "elasticloadbalancing:DeleteLoadBalancer",
+                          + "elasticloadbalancing:ModifyTargetGroup",
+                          + "elasticloadbalancing:ModifyTargetGroupAttributes",
+                          + "elasticloadbalancing:DeleteTargetGroup",
+                        ]
+                      + Condition = {
+                          + Null = {
+                              + "aws:ResourceTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "*"
+                    },
+                  + {
+                      + Action    = [
+                          + "elasticloadbalancing:AddTags",
+                        ]
+                      + Condition = {
+                          + Null         = {
+                              + "aws:RequestTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                          + StringEquals = {
+                              + "elasticloadbalancing:CreateAction" = [
+                                  + "CreateTargetGroup",
+                                  + "CreateLoadBalancer",
+                                ]
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = [
+                          + "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*",
+                        ]
+                    },
+                  + {
+                      + Action   = [
+                          + "elasticloadbalancing:RegisterTargets",
+                          + "elasticloadbalancing:DeregisterTargets",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*"
+                    },
+                  + {
+                      + Action   = [
+                          + "elasticloadbalancing:SetWebAcl",
+                          + "elasticloadbalancing:ModifyListener",
+                          + "elasticloadbalancing:AddListenerCertificates",
+                          + "elasticloadbalancing:RemoveListenerCertificates",
+                          + "elasticloadbalancing:ModifyRule",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + policy_id        = (known after apply)
+      + tags_all         = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+    }
+
+  # module.eks.aws_iam_policy.cluster_encryption will be created
+  + resource "aws_iam_policy" "cluster_encryption" {
+      + arn              = (known after apply)
+      + attachment_count = (known after apply)
+      + description      = "IAM policy for EKS cluster encryption"
+      + id               = (known after apply)
+      + name             = "devsu-test-cluster-encryption-policy"
+      + name_prefix      = (known after apply)
+      + path             = "/"
+      + policy           = (known after apply)
+      + policy_id        = (known after apply)
+      + tags_all         = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+    }
+
+  # module.eks.aws_iam_policy.eks_admin_policy will be created
+  + resource "aws_iam_policy" "eks_admin_policy" {
+      + arn              = (known after apply)
+      + attachment_count = (known after apply)
+      + id               = (known after apply)
+      + name             = "devsu-test-cluster-eks-admin-policy"
+      + name_prefix      = (known after apply)
+      + path             = "/"
+      + policy           = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action   = [
+                          + "iam:ListRoles",
+                          + "iam:ListRolePolicies",
+                          + "iam:GetRole",
+                          + "eks:*",
+                          + "ec2:Describe*",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + policy_id        = (known after apply)
+      + tags_all         = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+    }
+
+  # module.eks.aws_iam_policy.external_dns will be created
+  + resource "aws_iam_policy" "external_dns" {
+      + arn              = (known after apply)
+      + attachment_count = (known after apply)
+      + description      = "Policy using OIDC to give the EKS external dns ServiceAccount permissions to update Route53"
+      + id               = (known after apply)
+      + name             = "external-dns-dev"
+      + name_prefix      = (known after apply)
+      + path             = "/"
+      + policy           = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action   = [
+                          + "route53:ChangeResourceRecordSets",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = [
+                          + "arn:aws:route53:::hostedzone/*",
+                        ]
+                    },
+                  + {
+                      + Action   = [
+                          + "route53:ListHostedZones",
+                          + "route53:ListResourceRecordSets",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = [
+                          + "*",
+                        ]
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + policy_id        = (known after apply)
+      + tags_all         = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+    }
+
+  # module.eks.aws_iam_role.aws_load_balancer_controller will be created
+  + resource "aws_iam_role" "aws_load_balancer_controller" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = (known after apply)
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "aws-load-balancer-controller"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags_all              = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.eks_admins_role will be created
+  + resource "aws_iam_role" "eks_admins_role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + AWS = "arn:aws:iam::354918395475:root"
+                        }
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "devsu-test-cluster-eks-admins-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags_all              = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.eks_cluster_role will be created
+  + resource "aws_iam_role" "eks_cluster_role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "eks.amazonaws.com"
+                        }
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "devsu-test-cluster-eks-cluster-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags_all              = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.external_dns will be created
+  + resource "aws_iam_role" "external_dns" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = (known after apply)
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "external-dns-dev"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags                  = {
+          + "Terraform" = "true"
+        }
+      + tags_all              = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+          + "Terraform"   = "true"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.node_role will be created
+  + resource "aws_iam_role" "node_role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "ec2.amazonaws.com"
+                        }
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "devsu-test-cluster-node-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags_all              = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.vpc_cni_role will be created
+  + resource "aws_iam_role" "vpc_cni_role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = (known after apply)
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "devsu-test-cluster-vpc-cni-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags_all              = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.aws_load_balancer_controller_attach will be created
+  + resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
+      + id         = (known after apply)
+      + policy_arn = (known after apply)
+      + role       = "aws-load-balancer-controller"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.cluster_encryption will be created
+  + resource "aws_iam_role_policy_attachment" "cluster_encryption" {
+      + id         = (known after apply)
+      + policy_arn = (known after apply)
+      + role       = "devsu-test-cluster-eks-cluster-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_admin_role_policy_attach will be created
+  + resource "aws_iam_role_policy_attachment" "eks_admin_role_policy_attach" {
+      + id         = (known after apply)
+      + policy_arn = (known after apply)
+      + role       = "devsu-test-cluster-eks-admins-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_cloudwatch_policy will be created
+  + resource "aws_iam_role_policy_attachment" "eks_cloudwatch_policy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
+      + role       = "devsu-test-cluster-eks-cluster-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_cluster_policy will be created
+  + resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+      + role       = "devsu-test-cluster-eks-cluster-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_cni_policy will be created
+  + resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      + role       = "devsu-test-cluster-node-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_ebs_csi_policy will be created
+  + resource "aws_iam_role_policy_attachment" "eks_ebs_csi_policy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+      + role       = "devsu-test-cluster-node-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_registry_policy will be created
+  + resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      + role       = "devsu-test-cluster-node-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_vpc_resource_controller_policy will be created
+  + resource "aws_iam_role_policy_attachment" "eks_vpc_resource_controller_policy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+      + role       = "devsu-test-cluster-eks-cluster-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_worker_node_policy will be created
+  + resource "aws_iam_role_policy_attachment" "eks_worker_node_policy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+      + role       = "devsu-test-cluster-node-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.external_dns will be created
+  + resource "aws_iam_role_policy_attachment" "external_dns" {
+      + id         = (known after apply)
+      + policy_arn = (known after apply)
+      + role       = "external-dns-dev"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.vpc_cni_policy will be created
+  + resource "aws_iam_role_policy_attachment" "vpc_cni_policy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      + role       = "devsu-test-cluster-vpc-cni-role"
+    }
+
+  # module.eks.aws_kms_alias.eks_encryption will be created
+  + resource "aws_kms_alias" "eks_encryption" {
+      + arn            = (known after apply)
+      + id             = (known after apply)
+      + name           = (known after apply)
+      + name_prefix    = (known after apply)
+      + target_key_arn = (known after apply)
+      + target_key_id  = (known after apply)
+    }
+
+  # module.eks.aws_kms_key.eks_encryption will be created
+  + resource "aws_kms_key" "eks_encryption" {
+      + arn                                = (known after apply)
+      + bypass_policy_lockout_safety_check = false
+      + customer_master_key_spec           = "SYMMETRIC_DEFAULT"
+      + description                        = "KMS key for EKS cluster encryption"
+      + enable_key_rotation                = true
+      + id                                 = (known after apply)
+      + is_enabled                         = true
+      + key_id                             = (known after apply)
+      + key_usage                          = "ENCRYPT_DECRYPT"
+      + multi_region                       = (known after apply)
+      + policy                             = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = [
+                          + "kms:Update*",
+                          + "kms:TagResource",
+                          + "kms:ScheduleKeyDeletion",
+                          + "kms:Revoke*",
+                          + "kms:ReEncrypt*",
+                          + "kms:Put*",
+                          + "kms:List*",
+                          + "kms:Get*",
+                          + "kms:GenerateDataKey*",
+                          + "kms:Encrypt",
+                          + "kms:Enable*",
+                          + "kms:Disable*",
+                          + "kms:DescribeKey",
+                          + "kms:Describe*",
+                          + "kms:Delete*",
+                          + "kms:Decrypt",
+                          + "kms:Create*",
+                          + "kms:CancelKeyDeletion",
+                        ]
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + AWS = [
+                              + "arn:aws:iam::354918395475:user/iamadmin",
+                              + "arn:aws:iam::354918395475:root",
+                            ]
+                        }
+                      + Resource  = "*"
+                      + Sid       = "Key Administrators"
+                    },
+                  + {
+                      + Action    = [
+                          + "kms:ReEncrypt*",
+                          + "kms:GenerateDataKey*",
+                          + "kms:Encrypt",
+                          + "kms:DescribeKey",
+                          + "kms:Decrypt",
+                        ]
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "eks.amazonaws.com"
+                        }
+                      + Resource  = "*"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + rotation_period_in_days            = (known after apply)
+      + tags_all                           = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+    }
+
+  # module.eks.aws_launch_template.eks_node_group will be created
+  + resource "aws_launch_template" "eks_node_group" {
+      + arn                    = (known after apply)
+      + default_version        = (known after apply)
+      + description            = "Launch template for devsu-test-cluster EKS node group"
+      + id                     = (known after apply)
+      + latest_version         = (known after apply)
+      + name                   = (known after apply)
+      + name_prefix            = "devsu-test-cluster-eks-node-group-lt"
+      + tags                   = {
+          + "Name"                                     = "devsu-test-cluster-eks-node-group"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "owned"
+        }
+      + tags_all               = {
+          + "Environment"                              = "prod"
+          + "ManagedBy"                                = "Terraform"
+          + "Name"                                     = "devsu-test-cluster-eks-node-group"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "owned"
+        }
+      + vpc_security_group_ids = (known after apply)
+
+      + block_device_mappings {
+          + device_name = "/dev/xvda"
+
+          + ebs {
+              + delete_on_termination = "true"
+              + iops                  = (known after apply)
+              + throughput            = (known after apply)
+              + volume_size           = 20
+              + volume_type           = "gp3"
+            }
+        }
+
+      + metadata_options {
+          + http_endpoint               = "enabled"
+          + http_protocol_ipv6          = (known after apply)
+          + http_put_response_hop_limit = 2
+          + http_tokens                 = "required"
+          + instance_metadata_tags      = "enabled"
+        }
+
+      + tag_specifications {
+          + resource_type = "instance"
+          + tags          = {
+              + "Name" = "devsu-test-cluster-eks-node-group"
+            }
+        }
+    }
+
+  # module.eks.aws_security_group.eks_cluster_sg will be created
+  + resource "aws_security_group" "eks_cluster_sg" {
+      + arn                    = (known after apply)
+      + description            = "Security group for EKS cluster control plane communication with worker nodes"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = "devsu-test-cluster-eks-cluster-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name" = "devsu-test-cluster-eks-cluster-sg"
+        }
+      + tags_all               = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "devsu-test-cluster-eks-cluster-sg"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.eks.aws_security_group.eks_nodes_sg will be created
+  + resource "aws_security_group" "eks_nodes_sg" {
+      + arn                    = (known after apply)
+      + description            = "Security group for all nodes in the cluster"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = "devsu-test-cluster-eks-nodes-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name"                                     = "devsu-test-cluster-eks-nodes-sg"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "owned"
+        }
+      + tags_all               = {
+          + "Environment"                              = "prod"
+          + "ManagedBy"                                = "Terraform"
+          + "Name"                                     = "devsu-test-cluster-eks-nodes-sg"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "owned"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.eks.aws_security_group_rule.eks_cluster_egress_kublet will be created
+  + resource "aws_security_group_rule" "eks_cluster_egress_kublet" {
+      + description              = "Allow control plane to node egress for kubelet"
+      + from_port                = 10250
+      + id                       = (known after apply)
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + security_group_rule_id   = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 10250
+      + type                     = "egress"
+    }
+
+  # module.eks.aws_security_group_rule.eks_cluster_egress_nginx will be created
+  + resource "aws_security_group_rule" "eks_cluster_egress_nginx" {
+      + description              = "Allow control plane to node egress for nginx"
+      + from_port                = 8443
+      + id                       = (known after apply)
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + security_group_rule_id   = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 8443
+      + type                     = "egress"
+    }
+
+  # module.eks.aws_security_group_rule.eks_cluster_ingress_nodes will be created
+  + resource "aws_security_group_rule" "eks_cluster_ingress_nodes" {
+      + description              = "Allow inbound traffic from the worker nodes on the Kubernetes API endpoint port"
+      + from_port                = 443
+      + id                       = (known after apply)
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + security_group_rule_id   = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 443
+      + type                     = "ingress"
+    }
+
+  # module.eks.aws_security_group_rule.eks_nodes_ingress_alb will be created
+  + resource "aws_security_group_rule" "eks_nodes_ingress_alb" {
+      + description              = "Allow access from control plane to webhook port of AWS load balancer controller"
+      + from_port                = 9443
+      + id                       = (known after apply)
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + security_group_rule_id   = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 9443
+      + type                     = "ingress"
+    }
+
+  # module.eks.aws_security_group_rule.worker_node_egress_internet will be created
+  + resource "aws_security_group_rule" "worker_node_egress_internet" {
+      + cidr_blocks              = [
+          + "0.0.0.0/0",
+        ]
+      + description              = "Allow outbound internet access"
+      + from_port                = 0
+      + id                       = (known after apply)
+      + protocol                 = "-1"
+      + security_group_id        = (known after apply)
+      + security_group_rule_id   = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 0
+      + type                     = "egress"
+    }
+
+  # module.eks.aws_security_group_rule.worker_node_ingress_kublet will be created
+  + resource "aws_security_group_rule" "worker_node_ingress_kublet" {
+      + description              = "Allow control plane to node ingress for kubelet"
+      + from_port                = 10250
+      + id                       = (known after apply)
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + security_group_rule_id   = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 10250
+      + type                     = "ingress"
+    }
+
+  # module.eks.aws_security_group_rule.worker_node_ingress_nginx will be created
+  + resource "aws_security_group_rule" "worker_node_ingress_nginx" {
+      + description              = "Allow control plane to node ingress for nginx"
+      + from_port                = 8443
+      + id                       = (known after apply)
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + security_group_rule_id   = (known after apply)
+      + self                     = false
+      + source_security_group_id = (known after apply)
+      + to_port                  = 8443
+      + type                     = "ingress"
+    }
+
+  # module.eks.aws_security_group_rule.worker_node_to_worker_node_ingress_coredns_tcp will be created
+  + resource "aws_security_group_rule" "worker_node_to_worker_node_ingress_coredns_tcp" {
+      + description              = "Allow workers nodes to communicate with each other for coredns TCP"
+      + from_port                = 53
+      + id                       = (known after apply)
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + security_group_rule_id   = (known after apply)
+      + self                     = true
+      + source_security_group_id = (known after apply)
+      + to_port                  = 53
+      + type                     = "ingress"
+    }
+
+  # module.eks.aws_security_group_rule.worker_node_to_worker_node_ingress_coredns_udp will be created
+  + resource "aws_security_group_rule" "worker_node_to_worker_node_ingress_coredns_udp" {
+      + description              = "Allow workers nodes to communicate with each other for coredns UDP"
+      + from_port                = 53
+      + id                       = (known after apply)
+      + protocol                 = "udp"
+      + security_group_id        = (known after apply)
+      + security_group_rule_id   = (known after apply)
+      + self                     = true
+      + source_security_group_id = (known after apply)
+      + to_port                  = 53
+      + type                     = "ingress"
+    }
+
+  # module.eks.aws_security_group_rule.worker_node_to_worker_node_ingress_ephemeral will be created
+  + resource "aws_security_group_rule" "worker_node_to_worker_node_ingress_ephemeral" {
+      + description              = "Allow workers nodes to communicate with each other on ephemeral ports"
+      + from_port                = 1025
+      + id                       = (known after apply)
+      + protocol                 = "tcp"
+      + security_group_id        = (known after apply)
+      + security_group_rule_id   = (known after apply)
+      + self                     = true
+      + source_security_group_id = (known after apply)
+      + to_port                  = 65535
+      + type                     = "ingress"
+    }
+
+  # module.eks.helm_release.aws-load-balancer-controller will be created
+  + resource "helm_release" "aws-load-balancer-controller" {
+      + atomic                     = true
+      + chart                      = "aws-load-balancer-controller"
+      + cleanup_on_fail            = false
+      + create_namespace           = false
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + manifest                   = (known after apply)
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "aws-load-balancer-controller"
+      + namespace                  = "kube-system"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "https://aws.github.io/eks-charts"
+      + reset_values               = false
+      + reuse_values               = false
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + timeout                    = 900
+      + verify                     = false
+      + version                    = "1.11.0"
+      + wait                       = true
+      + wait_for_jobs              = true
+
+      + set {
+          + name  = "clusterName"
+          + value = "devsu-test-cluster"
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "clusterName"
+          + value = (known after apply)
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "enableServiceMutatorWebhook"
+          + value = "false"
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "image.repository"
+          + value = "602401143452.dkr.ecr.us-east-1.amazonaws.com/amazon/aws-load-balancer-controller"
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "region"
+          + value = "us-east-1"
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+          + value = (known after apply)
+            # (1 unchanged attribute hidden)
+        }
+    }
+
+  # module.eks.helm_release.external-dns will be created
+  + resource "helm_release" "external-dns" {
+      + atomic                     = false
+      + chart                      = "external-dns"
+      + cleanup_on_fail            = false
+      + create_namespace           = false
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + manifest                   = (known after apply)
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "external-dns"
+      + namespace                  = "kube-system"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "https://kubernetes-sigs.github.io/external-dns"
+      + reset_values               = false
+      + reuse_values               = false
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + timeout                    = 300
+      + verify                     = false
+      + version                    = "1.15.0"
+      + wait                       = true
+      + wait_for_jobs              = false
+
+      + set {
+          + name  = "domainFilters[0]"
+          + value = "esmerlinmieses.com"
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "policy"
+          + value = "sync"
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "provider"
+          + value = "aws"
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+          + value = (known after apply)
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "serviceAccount.name"
+          + value = "external-dns"
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "txtOwnerId"
+          + value = "external-dns"
+            # (1 unchanged attribute hidden)
+        }
+      + set {
+          + name  = "zoneType"
+          + value = "public"
+            # (1 unchanged attribute hidden)
+        }
+    }
+
+  # module.eks.kubernetes_config_map.aws_auth will be created
+  + resource "kubernetes_config_map" "aws_auth" {
+      + data = (known after apply)
+      + id   = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "aws-auth"
+          + namespace        = "kube-system"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # module.vpc.aws_default_security_group.main will be created
+  + resource "aws_default_security_group" "main" {
+      + arn                    = (known after apply)
+      + description            = (known after apply)
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = (known after apply)
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags_all               = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.vpc.aws_eip.nat_gateway[0] will be created
+  + resource "aws_eip" "nat_gateway" {
+      + allocation_id        = (known after apply)
+      + arn                  = (known after apply)
+      + association_id       = (known after apply)
+      + carrier_ip           = (known after apply)
+      + customer_owned_ip    = (known after apply)
+      + domain               = "vpc"
+      + id                   = (known after apply)
+      + instance             = (known after apply)
+      + ipam_pool_id         = (known after apply)
+      + network_border_group = (known after apply)
+      + network_interface    = (known after apply)
+      + private_dns          = (known after apply)
+      + private_ip           = (known after apply)
+      + ptr_record           = (known after apply)
+      + public_dns           = (known after apply)
+      + public_ip            = (known after apply)
+      + public_ipv4_pool     = (known after apply)
+      + tags_all             = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+        }
+      + vpc                  = (known after apply)
+    }
+
+  # module.vpc.aws_internet_gateway.main will be created
+  + resource "aws_internet_gateway" "main" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + owner_id = (known after apply)
+      + tags     = {
+          + "Name" = "devsu-test-cluster-vpc-internetgateway"
+        }
+      + tags_all = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "devsu-test-cluster-vpc-internetgateway"
+        }
+      + vpc_id   = (known after apply)
+    }
+
+  # module.vpc.aws_nat_gateway.main[0] will be created
+  + resource "aws_nat_gateway" "main" {
+      + allocation_id                      = (known after apply)
+      + association_id                     = (known after apply)
+      + connectivity_type                  = "public"
+      + id                                 = (known after apply)
+      + network_interface_id               = (known after apply)
+      + private_ip                         = (known after apply)
+      + public_ip                          = (known after apply)
+      + secondary_private_ip_address_count = (known after apply)
+      + secondary_private_ip_addresses     = (known after apply)
+      + subnet_id                          = (known after apply)
+      + tags                               = {
+          + "Name" = "devsu-test-cluster-vpc-natgateway-default"
+        }
+      + tags_all                           = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "devsu-test-cluster-vpc-natgateway-default"
+        }
+    }
+
+  # module.vpc.aws_route.private will be created
+  + resource "aws_route" "private" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + nat_gateway_id         = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = (known after apply)
+      + state                  = (known after apply)
+    }
+
+  # module.vpc.aws_route.public will be created
+  + resource "aws_route" "public" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + gateway_id             = (known after apply)
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = (known after apply)
+      + state                  = (known after apply)
+    }
+
+  # module.vpc.aws_route_table.private will be created
+  + resource "aws_route_table" "private" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = (known after apply)
+      + tags             = {
+          + "Name" = "devsu-test-cluster-vpc-routetable-private"
+        }
+      + tags_all         = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "devsu-test-cluster-vpc-routetable-private"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.vpc.aws_route_table.public will be created
+  + resource "aws_route_table" "public" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = (known after apply)
+      + tags             = {
+          + "Name" = "devsu-test-cluster-vpc-routetable-public"
+        }
+      + tags_all         = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "devsu-test-cluster-vpc-routetable-public"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.private[0] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.private[1] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.private[2] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.public[0] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.public[1] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.public[2] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.private[0] will be created
+  + resource "aws_subnet" "private" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-east-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.48.0/20"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                                     = "devsu-test-cluster-vpc-private-subnet-1"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/internal-elb"          = "1"
+        }
+      + tags_all                                       = {
+          + "Environment"                              = "prod"
+          + "ManagedBy"                                = "Terraform"
+          + "Name"                                     = "devsu-test-cluster-vpc-private-subnet-1"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/internal-elb"          = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.private[1] will be created
+  + resource "aws_subnet" "private" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-east-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.64.0/20"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                                     = "devsu-test-cluster-vpc-private-subnet-2"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/internal-elb"          = "1"
+        }
+      + tags_all                                       = {
+          + "Environment"                              = "prod"
+          + "ManagedBy"                                = "Terraform"
+          + "Name"                                     = "devsu-test-cluster-vpc-private-subnet-2"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/internal-elb"          = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.private[2] will be created
+  + resource "aws_subnet" "private" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-east-1c"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.80.0/20"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                                     = "devsu-test-cluster-vpc-private-subnet-3"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/internal-elb"          = "1"
+        }
+      + tags_all                                       = {
+          + "Environment"                              = "prod"
+          + "ManagedBy"                                = "Terraform"
+          + "Name"                                     = "devsu-test-cluster-vpc-private-subnet-3"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/internal-elb"          = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.public[0] will be created
+  + resource "aws_subnet" "public" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-east-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.0.0/20"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                                     = "devsu-test-cluster-vpc-public-subnet-1"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/elb"                   = "1"
+        }
+      + tags_all                                       = {
+          + "Environment"                              = "prod"
+          + "ManagedBy"                                = "Terraform"
+          + "Name"                                     = "devsu-test-cluster-vpc-public-subnet-1"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/elb"                   = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.public[1] will be created
+  + resource "aws_subnet" "public" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-east-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.16.0/20"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                                     = "devsu-test-cluster-vpc-public-subnet-2"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/elb"                   = "1"
+        }
+      + tags_all                                       = {
+          + "Environment"                              = "prod"
+          + "ManagedBy"                                = "Terraform"
+          + "Name"                                     = "devsu-test-cluster-vpc-public-subnet-2"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/elb"                   = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.public[2] will be created
+  + resource "aws_subnet" "public" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-east-1c"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.32.0/20"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                                     = "devsu-test-cluster-vpc-public-subnet-3"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/elb"                   = "1"
+        }
+      + tags_all                                       = {
+          + "Environment"                              = "prod"
+          + "ManagedBy"                                = "Terraform"
+          + "Name"                                     = "devsu-test-cluster-vpc-public-subnet-3"
+          + "kubernetes.io/cluster/devsu-test-cluster" = "shared"
+          + "kubernetes.io/role/elb"                   = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_vpc.main will be created
+  + resource "aws_vpc" "main" {
+      + arn                                  = (known after apply)
+      + cidr_block                           = "10.0.0.0/16"
+      + default_network_acl_id               = (known after apply)
+      + default_route_table_id               = (known after apply)
+      + default_security_group_id            = (known after apply)
+      + dhcp_options_id                      = (known after apply)
+      + enable_dns_hostnames                 = true
+      + enable_dns_support                   = true
+      + enable_network_address_usage_metrics = (known after apply)
+      + id                                   = (known after apply)
+      + instance_tenancy                     = "default"
+      + ipv6_association_id                  = (known after apply)
+      + ipv6_cidr_block                      = (known after apply)
+      + ipv6_cidr_block_network_border_group = (known after apply)
+      + main_route_table_id                  = (known after apply)
+      + owner_id                             = (known after apply)
+      + tags                                 = {
+          + "Name" = "devsu-test-cluster-vpc"
+        }
+      + tags_all                             = {
+          + "Environment" = "prod"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "devsu-test-cluster-vpc"
+        }
+    }
+
+Plan: 76 to add, 0 to change, 0 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.
