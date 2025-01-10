@@ -22,9 +22,9 @@ El código de Terraform configura los siguientes recursos de AWS:
   - Un rol de administradores de EKS que otros usuarios pueden asumir para acceder al EKS.
   - Despliegue de addons como AWS Load Balancer Controller para administrar Elastic Load Balancers (ELB) en un clúster de Kubernetes y External DNS para sincronizar los Servicios expuestos de Kubernetes y los Ingress con los proveedores de DNS como Route 53, automatizando la gestión de registros DNS.
 - **ECR:**
- - Facilitar el almacenamiento, intercambio y despliegue de imágenes de contenedores.
+  - Facilitar el almacenamiento, intercambio y despliegue de imágenes de contenedores.
 - **ACM:**
- - Facilitar la creación, administración y despliegue de certificados SSL/TLS para    proteger aplicaciones en AWS.
+  - Facilitar la creación, administración y despliegue de certificados SSL/TLS para    proteger aplicaciones en AWS.
 
 ## Prerequisitos
 
@@ -99,7 +99,7 @@ El código de Terraform configura los siguientes recursos de AWS:
 
    Confirma la acción escribiendo `yes` cuando se te solicite.
 
-## Infrastructure Details
+## Detalles de la infraestructura
 
 - **VPC (`module "vpc"`):** Configura una VPC llamada `demo-cluster-vpc` con un bloque CIDR especificado, y establece subredes públicas y privadas en tres zonas de disponibilidad. Se habilita un NAT Gateway para acceso a internet desde las subredes privadas.
 
