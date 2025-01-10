@@ -35,6 +35,7 @@ El proyecto Terraform está estructurado usando módulos, los cuales detallo a c
 
 3. **Desplegar infraestructura con terraform**:
     ```bash
+    cd iac
     export KUBE_CONFIG_PATH=~/.kube/config 
     terraform init
     terraform plan -var-file="dev.tfvars”
