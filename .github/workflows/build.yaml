@@ -60,7 +60,7 @@ jobs:
 
     - name: Scan image with Trivy
       id: scan-image
-      uses: aquasecurity/trivy-action@0.28.0
+      uses: aquasecurity/trivy-action@0.30.0
       with:
         image-ref: ${{ env.IMAGE_REF }}
         format: "sarif"
