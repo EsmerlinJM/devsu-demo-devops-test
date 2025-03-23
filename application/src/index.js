@@ -2,6 +2,7 @@ import sequelize from './shared/database/database.js'
 import { usersRouter } from "./users/router.js"
 import express from 'express'
 import * as dotenv from 'dotenv'
+
 dotenv.config()
 
 const app = express()
