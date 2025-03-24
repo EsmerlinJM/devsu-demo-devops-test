@@ -107,7 +107,7 @@ El código de Terraform configura los siguientes recursos de AWS:
 
 - **ECR Repository (`module "ecr"`):** Implementa configuraciones de Terraform para crear y gestionar repositorios ECR..
 
-- **ECR Repository (`module "acm"`):** Implementa el nombre de dominio proporcionado para solicitar un certificado SSL de ACM. El certificado estará disponible para su uso en otros servicios de AWS como ELB (Elastic Load Balancer) por ejemplo.
+- **ACM (`module "acm"`):** Implementa el nombre de dominio proporcionado para solicitar un certificado SSL de ACM. El certificado estará disponible para su uso en otros servicios de AWS como ELB (Elastic Load Balancer) por ejemplo.
 
 - **Variables (`variables.tf`):** Define las variables de entrada para las configuraciones de Terraform, incluyendo la región de AWS, el nombre del clúster y configuraciones para el backend de S3.
 
