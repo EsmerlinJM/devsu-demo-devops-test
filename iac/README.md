@@ -115,7 +115,7 @@ El código de Terraform configura los siguientes recursos de AWS:
 
 ## Notas
 
-- EAsegúrate de que el bucket de S3 y la tabla de DynamoDB especificados en `terraform.tf `existan antes de inicializar Terraform.
+- Asegúrate de que el bucket de S3 y la tabla de DynamoDB especificados en `terraform.tf `existan antes de inicializar Terraform.
 - Modifica el archivo `variables.tf` según tus necesidades o utiliza un archivo `terraform.tfvars` para configuraciones personalizadas.
 - Revisa los costos de AWS asociados con los recursos creados por estas configuraciones.
 
